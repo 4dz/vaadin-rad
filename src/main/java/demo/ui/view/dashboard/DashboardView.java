@@ -73,8 +73,6 @@ public final class DashboardView extends Panel implements View,
 
     @PostConstruct
     public void init() {
-        dashboardEventBus.subscribe(this);
-
         // All the open sub-windows should be closed whenever the root layout
         // gets clicked.
         root.addLayoutClickListener(new LayoutClickListener() {
@@ -339,8 +337,7 @@ public final class DashboardView extends Panel implements View,
         @EventBusListenerMethod
         public void updateNotificationsCount(
                 final NotificationsCountUpdatedEvent event) {
-            setUnreadCount(DashboardUI.getDataProvider()
-                    .getUnreadNotificationsCount());
+            setUnreadCount(DashboardUI.getDataProvider().getUnreadNotificationsCount());
         }
 
         public void setUnreadCount(final int count) {

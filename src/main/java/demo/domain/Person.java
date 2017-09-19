@@ -1,13 +1,18 @@
 package demo.domain;
  
+import lombok.*;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
- 
+
+@Data
 @Entity
 public class Person {
- 
+
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -15,20 +20,5 @@ public class Person {
     private String firstName;
     private String lastName;
  
-    public String getFirstName() {
-        return firstName;
-    }
- 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
- 
-    public String getLastName() {
-        return lastName;
-    }
- 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 }
 
