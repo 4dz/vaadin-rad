@@ -340,7 +340,7 @@ public final class DashboardView extends Panel implements View,
             setUnreadCount(DashboardUI.getDataProvider().getUnreadNotificationsCount());
         }
 
-        public void setUnreadCount(final int count) {
+        public void setUnreadCount(final long count) {
             setCaption(String.valueOf(count));
 
             String description = "Notifications";

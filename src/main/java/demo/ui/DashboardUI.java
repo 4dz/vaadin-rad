@@ -89,13 +89,14 @@ public final class DashboardUI extends UI implements ViewDisplay {
         setContent(mainLayout);
     }
 
+    /*
     @EventBusListenerMethod
     public void userLoginRequested(final UserLoginRequestedEvent event) {
         User user = getDataProvider().authenticate(event.getUserName(),
                 event.getPassword());
         VaadinSession.getCurrent().setAttribute(User.class.getName(), user);
         updateContent();
-    }
+    }*/
 
     @EventBusListenerMethod
     public void userLoggedOut(final UserLoggedOutEvent event) {

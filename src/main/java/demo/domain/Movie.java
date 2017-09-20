@@ -6,18 +6,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Data
 @Entity
-public final class DashboardNotification {
-
+public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private String content;
-    private boolean read;
-    private String firstName;
-    private String lastName;
-    private String prettyTime;
-    private String action;
+    private String title;
+    private String synopsis;
+    private String thumbUrl;
+    private String posterUrl;
+    private int duration;
+    private Date releaseDate;
+    private int score;
 }

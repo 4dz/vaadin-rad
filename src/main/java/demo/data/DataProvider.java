@@ -25,16 +25,9 @@ public interface DataProvider {
     Collection<MovieRevenue> getTotalMovieRevenues();
 
     /**
-     * @param userName
-     * @param password
-     * @return Authenticated used.
-     */
-    User authenticate(String userName, String password);
-
-    /**
      * @return The number of unread notifications for the current user.
      */
-    int getUnreadNotificationsCount();
+    long getUnreadNotificationsCount();
 
     /**
      * @return Notifications for the current user.
