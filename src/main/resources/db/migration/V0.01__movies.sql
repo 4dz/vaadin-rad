@@ -4,9 +4,9 @@ create table movie (
   synopsis varchar(1024) not null,
   thumb_url varchar(1024) not null,
   poster_url varchar(1024) not null,
-  duration integer,
-  release_date timestamp,
-  score integer
+  duration integer not null,
+  release_date timestamp not null,
+  score integer not null
 );
 
 insert into movie

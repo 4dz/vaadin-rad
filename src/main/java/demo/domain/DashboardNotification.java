@@ -1,6 +1,6 @@
 package demo.domain;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,11 +13,12 @@ public final class DashboardNotification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-    private String content;
-    private boolean read;
-    private String firstName;
-    private String lastName;
-    private String prettyTime;
-    private String action;
+    long id;
+
+    @NonNull String content = "";
+    boolean read = false;
+    @NonNull String firstName = "";
+    @NonNull String lastName = "";
+    @NonNull String prettyTime = "";
+    @NonNull String action = "";
 }

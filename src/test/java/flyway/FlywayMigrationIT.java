@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.greaterThan;
 
 public class FlywayMigrationIT {
 
-    private final String JDBC_URL = "jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
+    private final String JDBC_URL = "jdbc:h2:mem:flyway;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
 
     @Test
     public void shouldExecuteFlywayMigrations() {

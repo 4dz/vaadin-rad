@@ -19,8 +19,8 @@ import com.vaadin.ui.CustomField;
 public final class OptionalSelect<T> extends CustomField<T> {
     private T value;
     private Map<T, String> captions;
-    private final CheckBox checkBox;
-    private final ComboBox<T> comboBox;
+    final CheckBox checkBox;
+    final ComboBox<T> comboBox;
 
     @Override
     protected Component initContent() {
@@ -44,18 +44,20 @@ public final class OptionalSelect<T> extends CustomField<T> {
         comboBox.addStyleName(ValoTheme.COMBOBOX_SMALL);
         comboBox.setWidth(10.0f, Unit.EM);
         comboBox.setEnabled(false);
-        comboBox.addValueChangeListener(event -> setValue((T) event.getValue()));
+        comboBox.addValueChangeListener(event -> setValue(event.getValue()));
 
         checkBox = new CheckBox("Subscribe to newsletter", false);
         checkBox.setValue(comboBox.isEnabled());
         checkBox.addValueChangeListener( event -> {
             if (event.getValue()) {
+                comboBox.setEnabled(true);
                 if (comboBox.getValue() == null) {
                     if(comboBox.getSelectedItem().isPresent()) {
                         comboBox.setValue(comboBox.getSelectedItem().get());
                     }
                 }
             } else {
+                comboBox.setEnabled(true);
                 setValue(null);
             }
         });

@@ -1,5 +1,7 @@
 package demo.data;
 
+import demo.data.jpa.DashboardNotificationRepository;
+import demo.data.jpa.MovieRepository;
 import demo.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 
 @Service("dataProvider")
-public class DummyDataProvider implements DataProvider {
+public class JpaDataProvider implements DataProvider {
     @Autowired
     private DashboardNotificationRepository notificationRepository;
 
