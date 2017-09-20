@@ -1,5 +1,5 @@
 create table dashboard_notification (
-  id identity not null,
+  id BIGINT auto_increment primary key not null,
   content varchar(255) not null,
   read boolean not null,
   first_name varchar(255) not null,

@@ -1,5 +1,6 @@
 package demo.ui.view.transactions;
 
+import com.vaadin.data.ValueProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
@@ -103,9 +104,9 @@ public final class TransactionsView extends VerticalLayout implements View {
             Collection<Transaction> transactions = DashboardUI.getDataProvider()
                     .getRecentTransactions(200).stream().filter(transaction -> {
                         filterValue = filter.getValue().trim().toLowerCase();
-                        return passesFilter(transaction.getCountry())
-                                || passesFilter(transaction.getTitle())
-                                || passesFilter(transaction.getCity());
+                        return passesFilter(transaction.getRoom().getTheater().getCountry())
+                                || passesFilter(transaction.getMovie().getTitle())
+                                || passesFilter(transaction.getRoom().getTheater().getCity());
                     }).collect(Collectors.toList());
 
             ListDataProvider<Transaction> dataProvider = com.vaadin.data.provider.DataProvider
@@ -139,15 +140,15 @@ public final class TransactionsView extends VerticalLayout implements View {
         time.setId("Time").setHidable(true);
 
         collapsibleColumns
-                .add(grid.addColumn(Transaction::getCountry).setId("Country"));
+                .add(grid.addColumn(transaction -> transaction.getRoom().getTheater().getCountry()).setId("Country"));
         collapsibleColumns
-                .add(grid.addColumn(Transaction::getCity).setId("City"));
+                .add(grid.addColumn(transaction -> transaction.getRoom().getTheater().getCity()).setId("City"));
         collapsibleColumns
-                .add(grid.addColumn(Transaction::getTheater).setId("Theater"));
+                .add(grid.addColumn(transaction -> transaction.getRoom().getTheater().getName()).setId("Theater"));
         collapsibleColumns
-                .add(grid.addColumn(Transaction::getRoom).setId("Room"));
+                .add(grid.addColumn(transaction -> transaction.getRoom().getRoomName()).setId("Room"));
         collapsibleColumns
-                .add(grid.addColumn(Transaction::getRoom).setId("Title"));
+                .add(grid.addColumn(transaction -> transaction.getMovie().getTitle()).setId("Title"));
         collapsibleColumns
                 .add(grid.addColumn(Transaction::getSeats, new NumberRenderer())
                         .setId("Seats"));

@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TopTenMoviesTable extends Grid<MovieRevenue> {
 
-    public TopTenMoviesTable() {
+    public TopTenMoviesTable(List<MovieRevenue> movieRevenues) {
         setCaption("Top 10 Titles by Revenue");
 
         addStyleName(ValoTheme.TABLE_BORDERLESS);
@@ -27,10 +27,6 @@ public class TopTenMoviesTable extends Grid<MovieRevenue> {
         //setRowHeaderMode(RowHeaderMode.INDEX);
         //setColumnHeaderMode(ColumnHeaderMode.HIDDEN);
         setSizeFull();
-
-        List<MovieRevenue> movieRevenues = new ArrayList<>(
-                DashboardUI.getDataProvider().getTotalMovieRevenues());
-        Collections.sort(movieRevenues, (rev1, rev2) -> rev2.getRevenue().compareTo(rev1.getRevenue()));
 
         setItems(movieRevenues.subList(0, Math.min(10,movieRevenues.size())));
         addColumn(new ValueProvider<MovieRevenue, Integer>() {

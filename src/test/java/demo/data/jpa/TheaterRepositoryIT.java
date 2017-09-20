@@ -1,6 +1,6 @@
 package demo.data.jpa;
 
-import demo.domain.Movie;
+import demo.domain.Theater;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +12,14 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class MovieRepositoryIT {
-
+public class TheaterRepositoryIT {
     @Autowired
-    private MovieRepository repository;
+    TheaterRepository repository;
 
     @Test
-    public void shouldReadMovieFromDatabase_WhenDatabaseHasMovies() {
-        Movie movie = repository.findOne(1L);
-        assertThat(movie.getTitle(), equalTo("San Andreas"));
+    public void shouldReadTheatreFromDatabase_WhenDatabaseHasTheatres() {
+        Theater theater = repository.findOne(1L);
+        assertThat(theater.getCity(), equalTo("Shanghai"));
     }
 
 }

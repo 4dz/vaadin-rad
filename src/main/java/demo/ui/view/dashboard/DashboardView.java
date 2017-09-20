@@ -1,9 +1,10 @@
 package demo.ui.view.dashboard;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 import com.vaadin.spring.annotation.SpringView;
+import demo.domain.MovieRevenue;
+import demo.service.MovieService;
 import demo.ui.DashboardUI;
 import demo.ui.component.TopTenMoviesTable;
 import demo.domain.DashboardNotification;
@@ -47,6 +48,9 @@ public final class DashboardView extends Panel implements View,
 
     @Autowired
     private EventBus.ViewEventBus dashboardEventBus;
+
+    @Autowired
+    private MovieService movieService;
 
     public static final String EDIT_ID = "dashboard-edit";
     public static final String TITLE_ID = "dashboard-title";
@@ -160,7 +164,10 @@ public final class DashboardView extends Panel implements View,
     }
 
     private Component buildTop10TitlesByRevenue() {
-        Component contentWrapper = createContentWrapper(new TopTenMoviesTable());
+        List<MovieRevenue> movieRevenues = new ArrayList<>(movieService.getTotalMovieRevenues());
+        Collections.sort(movieRevenues, (rev1, rev2) -> rev2.getRevenue().compareTo(rev1.getRevenue()));
+
+        Component contentWrapper = createContentWrapper(new TopTenMoviesTable(movieRevenues));
         contentWrapper.addStyleName("top10-revenue");
         return contentWrapper;
     }

@@ -1,5 +1,5 @@
 create table movie (
-  id identity not null,
+  id BIGINT auto_increment primary key not null,
   title varchar(255) not null,
   synopsis varchar(1024) not null,
   thumb_url varchar(1024) not null,
