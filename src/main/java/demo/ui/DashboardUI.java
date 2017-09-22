@@ -22,7 +22,6 @@ import demo.ui.event.DashboardEvent;
 import demo.ui.event.DashboardEvent.BrowserResizeEvent;
 import demo.ui.event.DashboardEvent.CloseOpenWindowsEvent;
 import demo.ui.event.DashboardEvent.UserLoggedOutEvent;
-import demo.ui.event.DashboardEvent.UserLoginRequestedEvent;
 import demo.ui.view.MainLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;

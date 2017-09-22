@@ -136,25 +136,23 @@ public final class TransactionsView extends VerticalLayout implements View {
         grid.setSizeFull();
 
         Column<Transaction, String> time = grid.addColumn(
-                transaction -> DATEFORMAT.format(transaction.getTime()));
-        time.setId("Time").setHidable(true);
+                transaction -> DATEFORMAT.format(transaction.getTime())).setId("Time").setHidable(true).setCaption("Time");
 
         collapsibleColumns
-                .add(grid.addColumn(transaction -> transaction.getRoom().getTheater().getCountry()).setId("Country"));
+                .add(grid.addColumn(transaction -> transaction.getRoom().getTheater().getCountry()).setId("Country").setCaption("Country"));
         collapsibleColumns
-                .add(grid.addColumn(transaction -> transaction.getRoom().getTheater().getCity()).setId("City"));
+                .add(grid.addColumn(transaction -> transaction.getRoom().getTheater().getCity()).setId("City").setCaption("City"));
         collapsibleColumns
-                .add(grid.addColumn(transaction -> transaction.getRoom().getTheater().getName()).setId("Theater"));
+                .add(grid.addColumn(transaction -> transaction.getRoom().getTheater().getName()).setId("Theater").setCaption("Theater"));
         collapsibleColumns
-                .add(grid.addColumn(transaction -> transaction.getRoom().getRoomName()).setId("Room"));
+                .add(grid.addColumn(transaction -> transaction.getRoom().getRoomName()).setId("Room").setCaption("Room"));
         collapsibleColumns
-                .add(grid.addColumn(transaction -> transaction.getMovie().getTitle()).setId("Title"));
+                .add(grid.addColumn(transaction -> transaction.getMovie().getTitle()).setId("Title").setCaption("Title"));
         collapsibleColumns
-                .add(grid.addColumn(Transaction::getSeats, new NumberRenderer())
-                        .setId("Seats"));
+                .add(grid.addColumn(Transaction::getSeats, new NumberRenderer()).setId("Seats").setCaption("Seats").setStyleGenerator(item -> "v-align-right"));
         grid.addColumn(transaction -> "$"
-                + DECIMALFORMAT.format(transaction.getPrice())).setId("Price")
-                .setHidable(true);
+                + DECIMALFORMAT.format(transaction.getPrice())).setId("Price").setCaption("Price")
+                .setHidable(true).setStyleGenerator(item -> "v-align-right");
 
         grid.setColumnReorderingAllowed(true);
 
@@ -166,7 +164,7 @@ public final class TransactionsView extends VerticalLayout implements View {
         grid.setDataProvider(dataProvider);
 
         // TODO either add these to grid or do it with style generators here
-        // grid.setColumnAlignment("seats", Align.RIGHT);
+        //grid.setColumnAlignment("seats", Align.RIGHT);
         // grid.setColumnAlignment("price", Align.RIGHT);
 
         // TODO add when footers implemented in v8
