@@ -37,7 +37,7 @@ public class TopTenMoviesTable extends Grid<MovieRevenue> {
             }
         }).setSortable(false).setWidth(30);
 
-        addColumn(MovieRevenue::getTitle).setCaption("Title").setSortable(false).setExpandRatio(2);
+        addColumn(m -> m.getMovie().getTitle()).setCaption("Title").setSortable(false).setExpandRatio(2);
         addColumn(MovieRevenue::getRevenue)
                 .setCaption("Revenue")
                 .setSortable(false)

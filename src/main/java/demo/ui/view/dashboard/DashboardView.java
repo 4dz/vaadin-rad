@@ -3,8 +3,8 @@ package demo.ui.view.dashboard;
 import java.util.*;
 
 import com.vaadin.spring.annotation.SpringView;
+import demo.data.DataProvider;
 import demo.domain.MovieRevenue;
-import demo.service.MovieService;
 import demo.ui.DashboardUI;
 import demo.ui.component.TopTenMoviesTable;
 import demo.domain.DashboardNotification;
@@ -50,7 +50,7 @@ public final class DashboardView extends Panel implements View,
     private EventBus.ViewEventBus dashboardEventBus;
 
     @Autowired
-    private MovieService movieService;
+    private DataProvider dataProvider;
 
     public static final String EDIT_ID = "dashboard-edit";
     public static final String TITLE_ID = "dashboard-title";
@@ -164,7 +164,7 @@ public final class DashboardView extends Panel implements View,
     }
 
     private Component buildTop10TitlesByRevenue() {
-        List<MovieRevenue> movieRevenues = new ArrayList<>(movieService.getTotalMovieRevenues());
+        List<MovieRevenue> movieRevenues = dataProvider.getTotalMovieRevenues(10);
         Collections.sort(movieRevenues, (rev1, rev2) -> rev2.getRevenue().compareTo(rev1.getRevenue()));
 
         Component contentWrapper = createContentWrapper(new TopTenMoviesTable(movieRevenues));

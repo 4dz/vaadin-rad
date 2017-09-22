@@ -2,6 +2,7 @@ package demo.data;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import demo.domain.DashboardNotification;
 import demo.domain.MovieRevenue;
@@ -17,12 +18,12 @@ public interface DataProvider {
      *            Number of transactions to fetch.
      * @return A Collection of most recent transactions.
      */
-    Collection<Transaction> getRecentTransactions(int count);
+    List<Transaction> getRecentTransactions(int count);
 
     /**
      * @return Total revenues for each listed movie.
      */
-    Collection<MovieRevenue> getTotalMovieRevenues();
+    List<MovieRevenue> getTotalMovieRevenues(int count);
 
     /**
      * @return The number of unread notifications for the current user.
