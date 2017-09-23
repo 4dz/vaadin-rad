@@ -3,9 +3,9 @@ package demo.ui.view.transactions;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.server.Responsive;
 import com.vaadin.spring.annotation.SpringView;
@@ -116,7 +116,7 @@ public final class TransactionsView extends VerticalLayout implements View {
         });
 
         filter.setPlaceholder("Filter");
-        filter.setIcon(FontAwesome.SEARCH);
+        filter.setIcon(VaadinIcons.SEARCH);
         filter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         filter.addShortcutListener(
                 new ShortcutListener("Clear", KeyCode.ESCAPE, null) {

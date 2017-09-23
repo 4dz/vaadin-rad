@@ -1,17 +1,17 @@
 package demo.ui.view;
 
 
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.navigator.View;
+import com.vaadin.server.Resource;
 import demo.ui.view.dashboard.DashboardView;
 import demo.ui.view.schedule.ScheduleView;
 import demo.ui.view.transactions.TransactionsView;
-import com.vaadin.navigator.View;
-import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Resource;
 
 public enum DashboardViewType {
-    DASHBOARD("Dashboard", "", DashboardView.class, FontAwesome.HOME, true),
-    TRANSACTIONS("Transactions", "transactions", TransactionsView.class, FontAwesome.TABLE, false),
-    SCHEDULE("Schedule", "schedule", ScheduleView.class, FontAwesome.CALENDAR, false);
+    DASHBOARD("Dashboard", "", DashboardView.class, VaadinIcons.HOME, true),
+    TRANSACTIONS("Transactions", "transactions", TransactionsView.class, VaadinIcons.TABLE, false),
+    SCHEDULE("Schedule", "schedule", ScheduleView.class, VaadinIcons.CALENDAR, false);
 
     private final String title;
     private final String viewName;

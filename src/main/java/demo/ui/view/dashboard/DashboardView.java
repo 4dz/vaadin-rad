@@ -1,45 +1,35 @@
 package demo.ui.view.dashboard;
 
-import java.util.*;
-
-import com.vaadin.spring.annotation.SpringView;
-import demo.data.DataProvider;
-import demo.domain.MovieRevenue;
-import demo.ui.DashboardUI;
-import demo.ui.component.TopTenMoviesTable;
-import demo.domain.DashboardNotification;
-import demo.ui.event.DashboardEvent.CloseOpenWindowsEvent;
-import demo.ui.event.DashboardEvent.NotificationsCountUpdatedEvent;
-import demo.ui.view.dashboard.DashboardEdit.DashboardEditListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Responsive;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.MenuBar;
-import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextArea;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
+import demo.data.DataProvider;
+import demo.domain.DashboardNotification;
+import demo.domain.MovieRevenue;
+import demo.ui.DashboardUI;
+import demo.ui.component.TopTenMoviesTable;
+import demo.ui.event.DashboardEvent.CloseOpenWindowsEvent;
+import demo.ui.event.DashboardEvent.NotificationsCountUpdatedEvent;
+import demo.ui.view.dashboard.DashboardEdit.DashboardEditListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.spring.events.annotation.EventBusListenerMethod;
 
 import javax.annotation.PostConstruct;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 @SpringView(name="")
 @SuppressWarnings("serial")
@@ -127,7 +117,7 @@ public final class DashboardView extends Panel implements View,
     private Component buildEditButton() {
         Button result = new Button();
         result.setId(EDIT_ID);
-        result.setIcon(FontAwesome.EDIT);
+        result.setIcon(VaadinIcons.EDIT);
         result.addStyleName("icon-edit");
         result.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
         result.setDescription("Edit Dashboard");
@@ -194,35 +184,21 @@ public final class DashboardView extends Panel implements View,
 
         MenuBar tools = new MenuBar();
         tools.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
-        MenuItem max = tools.addItem("", FontAwesome.EXPAND, new Command() {
-
-            @Override
-            public void menuSelected(final MenuItem selectedItem) {
-                if (!slot.getStyleName().contains("max")) {
-                    selectedItem.setIcon(FontAwesome.COMPRESS);
-                    toggleMaximized(slot, true);
-                } else {
-                    slot.removeStyleName("max");
-                    selectedItem.setIcon(FontAwesome.EXPAND);
-                    toggleMaximized(slot, false);
-                }
+        MenuItem max = tools.addItem("", VaadinIcons.EXPAND, selectedItem -> {
+            if (!slot.getStyleName().contains("max")) {
+                selectedItem.setIcon(VaadinIcons.COMPRESS);
+                toggleMaximized(slot, true);
+            } else {
+                slot.removeStyleName("max");
+                selectedItem.setIcon(VaadinIcons.EXPAND);
+                toggleMaximized(slot, false);
             }
         });
         max.setStyleName("icon-only");
-        MenuItem root = tools.addItem("", FontAwesome.COG, null);
-        root.addItem("Configure", new Command() {
-            @Override
-            public void menuSelected(final MenuItem selectedItem) {
-                Notification.show("Not implemented in this demo");
-            }
-        });
+        MenuItem root = tools.addItem("", VaadinIcons.COG, null);
+        root.addItem("Configure", selectedItem -> Notification.show("Not implemented in this demo"));
         root.addSeparator();
-        root.addItem("Close", new Command() {
-            @Override
-            public void menuSelected(final MenuItem selectedItem) {
-                Notification.show("Not implemented in this demo");
-            }
-        });
+        root.addItem("Close", selectedItem -> Notification.show("Not implemented in this demo"));
 
         toolbar.addComponents(caption, tools);
         toolbar.setExpandRatio(caption, 1);
@@ -286,7 +262,7 @@ public final class DashboardView extends Panel implements View,
             notificationsWindow.setClosable(false);
             notificationsWindow.setResizable(false);
             notificationsWindow.setDraggable(false);
-            notificationsWindow.setCloseShortcut(KeyCode.ESCAPE, null);
+            notificationsWindow.addCloseShortcut(KeyCode.ESCAPE);
             notificationsWindow.setContent(notificationsLayout);
         }
 
@@ -334,7 +310,7 @@ public final class DashboardView extends Panel implements View,
         public static final String ID = "dashboard-notifications";
 
         public NotificationsButton() {
-            setIcon(FontAwesome.BELL);
+            setIcon(VaadinIcons.BELL);
             setId(ID);
             addStyleName("notifications");
             addStyleName(ValoTheme.BUTTON_ICON_ONLY);

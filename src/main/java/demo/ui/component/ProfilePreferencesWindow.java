@@ -1,44 +1,29 @@
 package demo.ui.component;
 
-import java.util.Arrays;
-
 import com.vaadin.annotations.PropertyId;
 import com.vaadin.data.BeanValidationBinder;
-import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
-import demo.domain.User;
-import demo.ui.event.DashboardEvent.CloseOpenWindowsEvent;
-import demo.ui.event.DashboardEvent.ProfileUpdatedEvent;
 import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.server.FontAwesome;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.UserError;
 import com.vaadin.shared.Position;
 import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.UIScope;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.RadioButtonGroup;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TextArea;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
+import demo.domain.User;
+import demo.ui.event.DashboardEvent.CloseOpenWindowsEvent;
+import demo.ui.event.DashboardEvent.ProfileUpdatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
+
+import java.util.Arrays;
 
 @SpringComponent
 @UIScope
@@ -119,7 +104,7 @@ public class ProfilePreferencesWindow extends Window {
     private Component buildPreferencesTab() {
         VerticalLayout root = new VerticalLayout();
         root.setCaption("Preferences");
-        root.setIcon(FontAwesome.COGS);
+        root.setIcon(VaadinIcons.COGS);
         root.setSpacing(true);
         root.setMargin(true);
         root.setSizeFull();
@@ -136,7 +121,7 @@ public class ProfilePreferencesWindow extends Window {
     private Component buildProfileTab() {
         HorizontalLayout root = new HorizontalLayout();
         root.setCaption("Profile");
-        root.setIcon(FontAwesome.USER);
+        root.setIcon(VaadinIcons.USER);
         root.setWidth(100.0f, Unit.PERCENTAGE);
         root.setMargin(true);
         root.addStyleName("profile-form");
