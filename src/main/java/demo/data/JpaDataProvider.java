@@ -56,4 +56,9 @@ public class JpaDataProvider implements DataProvider {
                 new Transaction()
         );
     }
+
+    @Override
+    public Collection<Movie> getMovies() {
+        return movieRepository.findAll();
+    }
 }

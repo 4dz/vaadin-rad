@@ -13731,6 +13731,76 @@ div.v-layout.v-horizontal.v-widget {
 	color: gray;
 }
 
+.dashboard .schedule .v-calendar-event-content {
+	background-repeat: repeat-x, no-repeat;
+	background-size: auto, cover;
+	border: 1px solid #000;
+	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.dashboard .schedule .v-calendar-event-caption {
+	right: 0;
+	width: auto;
+	font-size: 12px;
+	font-weight: 600;
+	color: #fff;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.dashboard .schedule .v-calendar-event-caption span {
+	color: #979699;
+}
+
+.dashboard .schedule .v-calendar-header-day {
+	font-weight: 500;
+	font-size: 0.8em;
+	text-transform: uppercase;
+	color: #197de1;
+}
+
+.dashboard .schedule .tray {
+	position: relative;
+	padding: 13px 25px;
+	background: white;
+	border-top: 1px solid #c5c5c5;
+	-webkit-transition: -webkit-transform 400ms 120ms;
+	-ms-transition: -ms-transform 400ms 120ms;
+	transition: transform 400ms 120ms;
+}
+
+.dashboard .schedule .tray.v-animate-reveal {
+	-ms-transform: translateY(-100%);
+	-webkit-transform: translateY(-100%);
+	transform: translateY(-100%);
+}
+
+.dashboard .schedule .catalog {
+	padding: 25px;
+}
+
+.dashboard .schedule .catalog .frame {
+	cursor: pointer;
+}
+
+.dashboard .schedule .catalog .frame .v-image {
+	-webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+	border-radius: 2px;
+	border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.dashboard .schedule .catalog .frame:hover .v-image {
+	border-color: #197de1;
+}
+
+.dashboard .schedule .catalog .frame .v-label {
+	font-size: 14px;
+	line-height: 1.2;
+	margin: 0.5em 0 1em;
+}
+
 .dashboard .transactions .viewheader {
 	padding: 25px;
 	border-bottom: 1px solid #dfdfdf;

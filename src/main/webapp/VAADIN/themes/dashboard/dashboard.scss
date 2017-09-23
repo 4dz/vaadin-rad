@@ -3,6 +3,7 @@
 @import "views/login";
 @import "views/dashboardview";
 @import "views/transactions";
+@import "views/schedule";
 
 // Optimize the CSS output
 $v-included-components: remove($v-included-components, accordion);
@@ -27,5 +28,6 @@ $valo-menu-background-color: #414B56;
   @include dashboard-common;
   @include dashboard-login-view;
   @include dashboard-dashboard-view;
+  @include dashboard-schedule-view;
   @include dashboard-transactions-view;
 }

@@ -4,10 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import demo.domain.DashboardNotification;
-import demo.domain.MovieRevenue;
-import demo.domain.Transaction;
-import demo.domain.User;
+import demo.domain.*;
 
 /**
  * QuickTickets Dashboard backend API.
@@ -47,4 +44,6 @@ public interface DataProvider {
      *         dates.
      */
     Collection<Transaction> getTransactionsBetween(Date startDate, Date endDate);
+
+    Collection<Movie> getMovies();
 }
