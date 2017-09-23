@@ -11,6 +11,12 @@ import demo.domain.Movie;
 import demo.ui.event.DashboardEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
+import org.vaadin.viritin.button.MButton;
+import org.vaadin.viritin.label.MLabel;
+import org.vaadin.viritin.layouts.MFormLayout;
+import org.vaadin.viritin.layouts.MHorizontalLayout;
+import org.vaadin.viritin.layouts.MPanel;
+import org.vaadin.viritin.layouts.MVerticalLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,9 +27,9 @@ public class MovieDetailsWindow extends Window {
 
     private final EventBus.UIEventBus dashboardEventBus;
 
-    private final Label synopsis = new Label();
+    private final MLabel synopsis = new MLabel();
 
-    private final VerticalLayout content;
+    private final MVerticalLayout content;
 
     @Autowired
     public MovieDetailsWindow(EventBus.UIEventBus dashboardEventBus) {
@@ -38,90 +44,65 @@ public class MovieDetailsWindow extends Window {
         setClosable(false);
         setHeight(90.0f, Unit.PERCENTAGE);
 
-        content = new VerticalLayout();
-        content.setSizeFull();
+        content = new MVerticalLayout().withFullSize();
+
         setContent(content);
-        content.setMargin(false);
-        content.setSpacing(false);
+//        content.setMargin(false);
+//        content.setSpacing(false);
 
     }
 
     private Component buildFooter() {
-        HorizontalLayout footer = new HorizontalLayout();
-        footer.addStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
-        footer.setWidth(100.0f, Unit.PERCENTAGE);
-        footer.setSpacing(false);
+        MButton ok = new MButton("Close").withStyleName(ValoTheme.BUTTON_PRIMARY);
+        MHorizontalLayout footer = new MHorizontalLayout(ok)
+                .withStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR)
+                .withFullWidth()
+                .withComponentAlignment(ok, Alignment.TOP_RIGHT);
 
-        Button ok = new Button("Close");
-        ok.addStyleName(ValoTheme.BUTTON_PRIMARY);
+        //footer.setSpacing(false);
         ok.addClickListener(event -> close());
         ok.focus();
-        footer.addComponent(ok);
-        footer.setComponentAlignment(ok, Alignment.TOP_RIGHT);
+
         return footer;
     }
 
-    private Component buildMovieDetails(final Movie movie,
-                                        final Date startTime, final Date endTime) {
-        HorizontalLayout details = new HorizontalLayout();
-        details.setWidth(100.0f, Unit.PERCENTAGE);
-        details.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
-        details.setMargin(true);
-
-        final Image coverImage = new Image(null, new ExternalResource(
-                movie.getThumbUrl()));
+    private Component buildMovieDetails(final Movie movie, final Date startTime, final Date endTime) {
+        final Image coverImage = new Image(null, new ExternalResource(movie.getThumbUrl()));
         coverImage.addStyleName("cover");
-        details.addComponent(coverImage);
 
-        Component detailsForm = buildDetailsForm(movie, startTime, endTime);
-        details.addComponent(detailsForm);
-        details.setExpandRatio(detailsForm, 1);
-
-        return details;
+        return new MHorizontalLayout(coverImage).withFullWidth()
+                .withStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING)
+                .expand(buildDetailsForm(movie, startTime, endTime));
     }
 
-    private Component buildDetailsForm(final Movie movie, final Date startTime,
-                                       final Date endTime) {
-        FormLayout fields = new FormLayout();
-        fields.setSpacing(false);
-        fields.setMargin(false);
+    private Component buildDetailsForm(final Movie movie, final Date startTime, final Date endTime) {
+        MFormLayout fields = new MFormLayout();
+//        fields.setSpacing(false);
+//        fields.setMargin(false);
 
-        Label label;
-        SimpleDateFormat df = new SimpleDateFormat();
+        SimpleDateFormat date = new SimpleDateFormat("dd-mm-yyyy");
+        SimpleDateFormat time = new SimpleDateFormat("hh:mm a");
         if (startTime != null) {
-            df.applyPattern("dd-mm-yyyy");
-            label = new Label(df.format(startTime));
-            label.setSizeUndefined();
-            label.setCaption("Date");
-            fields.addComponent(label);
-
-            df.applyPattern("hh:mm a");
-            label = new Label(df.format(startTime));
-            label.setSizeUndefined();
-            label.setCaption("Starts");
-            fields.addComponent(label);
+            fields.addComponent(new MLabel("Date", date.format(startTime)).withUndefinedSize());
+            fields.addComponent(new MLabel("Starts", time.format(startTime)).withUndefinedSize());
         }
 
         if (endTime != null) {
-            label = new Label(df.format(endTime));
-            label.setSizeUndefined();
-            label.setCaption("Ends");
-            fields.addComponent(label);
+            fields.addComponent(new MLabel("Ends", time.format(endTime)).withUndefinedSize());
         }
 
-        label = new Label(movie.getDuration() + " minutes");
-        label.setSizeUndefined();
-        label.setCaption("Duration");
-        fields.addComponent(label);
+        fields.addComponent(new MLabel("Duration", movie.getDuration() + " minutes").withUndefinedSize());
 
         synopsis.setData(movie.getSynopsis());
         synopsis.setCaption("Synopsis");
+        synopsis.setSizeFull();
         updateSynopsis(movie, false);
-        fields.addComponent(synopsis);
 
-        final Button more = new Button("More…");
-        more.addStyleName(ValoTheme.BUTTON_LINK);
-        fields.addComponent(more);
+        final MButton more = new MButton("More…")
+            .withStyleName(ValoTheme.BUTTON_LINK);
+
+        fields.addComponents(synopsis, more);
+
         more.addClickListener(event -> {
             updateSynopsis(null, true);
             event.getButton().setVisible(false);
@@ -150,12 +131,8 @@ public class MovieDetailsWindow extends Window {
         //Window w = new MovieDetailsWindow(movie, startTime, endTime);
         setCaption(movie.getTitle());
         content.removeAllComponents();
-        Panel detailsWrapper = new Panel(buildMovieDetails(movie, startTime, endTime));
-        detailsWrapper.setSizeFull();
-        detailsWrapper.addStyleName(ValoTheme.PANEL_BORDERLESS);
-        detailsWrapper.addStyleName("scroll-divider");
-        content.addComponent(detailsWrapper);
-        content.setExpandRatio(detailsWrapper, 1f);
+        MPanel detailsWrapper = new MPanel(buildMovieDetails(movie, startTime, endTime)).withFullSize().withStyleName(ValoTheme.PANEL_BORDERLESS, "scroll-divider");
+        content.expand(detailsWrapper);
         content.addComponent(buildFooter());
 
         UI.getCurrent().addWindow(this);

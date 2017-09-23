@@ -23,16 +23,16 @@ public class TopTenMoviesTable extends Grid<MovieRevenue> {
         setSizeFull();
         setItems(movieRevenues.subList(0, Math.min(10,movieRevenues.size())));
 
-        addColumn(movieRevenue -> movieRevenues.indexOf(movieRevenue) + 1).setSortable(false).setExpandRatio(0);
+        addColumn(movieRevenue -> movieRevenues.indexOf(movieRevenue) + 1).setExpandRatio(0);
 
-        addColumn(m -> m.getMovie().getTitle()).setCaption("Title").setSortable(false).setExpandRatio(2);
+        addColumn(m -> m.getMovie().getTitle()).setCaption("Title").setExpandRatio(2);
 
         addColumn(MovieRevenue::getRevenue)
                 .setCaption("Revenue")
-                .setSortable(false)
                 .setExpandRatio(1)
                 .setStyleGenerator(item -> "v-align-right")
                 .setRenderer(new NumberRenderer(new DecimalFormat("$#.##")));
 
+        getColumns().forEach(c -> c.setSortable(false));
     }
 }

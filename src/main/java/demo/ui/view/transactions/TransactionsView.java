@@ -13,6 +13,7 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.components.grid.FooterRow;
 import com.vaadin.ui.renderers.NumberRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import demo.data.DataProvider;
@@ -23,15 +24,15 @@ import demo.ui.event.DashboardEvent.BrowserResizeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.spring.events.annotation.EventBusListenerMethod;
+import org.vaadin.viritin.fields.MTextField;
+import org.vaadin.viritin.label.MLabel;
+import org.vaadin.viritin.layouts.MHorizontalLayout;
 
 import javax.annotation.PostConstruct;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @SpringView
@@ -62,7 +63,7 @@ public final class TransactionsView extends VerticalLayout implements View {
         addComponent(buildToolbar());
 
         grid = buildGrid();
-        SingleSelect<Transaction> singleSelect = grid.asSingleSelect();
+        //SingleSelect<Transaction> singleSelect = grid.asSingleSelect();
         addComponent(grid);
         setExpandRatio(grid, 1);
     }
@@ -81,28 +82,20 @@ public final class TransactionsView extends VerticalLayout implements View {
     }
 
     private Component buildToolbar() {
-        HorizontalLayout header = new HorizontalLayout();
-        header.addStyleName("viewheader");
+        MLabel title = new MLabel("Latest Transactions").withUndefinedSize()
+                .withStyleName(ValoTheme.LABEL_H1,ValoTheme.LABEL_NO_MARGIN);
+
+        MHorizontalLayout header = new MHorizontalLayout(title,
+                new MHorizontalLayout(buildFilter()).withStyleName("toolbar")).withStyleName("viewheader");
         Responsive.makeResponsive(header);
-
-        Label title = new Label("Latest Transactions");
-        title.setSizeUndefined();
-        title.addStyleName(ValoTheme.LABEL_H1);
-        title.addStyleName(ValoTheme.LABEL_NO_MARGIN);
-        header.addComponent(title);
-
-
-        HorizontalLayout tools = new HorizontalLayout(buildFilter());
-        tools.addStyleName("toolbar");
-        header.addComponent(tools);
 
         return header;
     }
 
     private Component buildFilter() {
-        final TextField filter = new TextField();
+        final MTextField filter = new MTextField()
+                .withPlaceholder("Filter").withIcon(VaadinIcons.SEARCH).withStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
 
-        // TODO use new filtering API
         filter.addValueChangeListener(event -> {
 
             Collection<Transaction> transactions = dataProvider
@@ -118,14 +111,10 @@ public final class TransactionsView extends VerticalLayout implements View {
             grid.setDataProvider(dataProvider);
         });
 
-        filter.setPlaceholder("Filter");
-        filter.setIcon(VaadinIcons.SEARCH);
-        filter.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         filter.addShortcutListener(
                 new ShortcutListener("Clear", KeyCode.ESCAPE, null) {
                     @Override
-                    public void handleAction(final Object sender,
-                                             final Object target) {
+                    public void handleAction(final Object sender, final Object target) {
                         filter.setValue("");
                     }
                 });
@@ -157,10 +146,14 @@ public final class TransactionsView extends VerticalLayout implements View {
                 .setHidable(true).setStyleGenerator(item -> "v-align-right");
 
         grid.setColumnReorderingAllowed(true);
-
-        ListDataProvider<Transaction> dataProvider = ofCollection(this.dataProvider.getRecentTransactions(200));
+        List<Transaction> transactions = this.dataProvider.getRecentTransactions(200);
+        ListDataProvider<Transaction> dataProvider = ofCollection(transactions);
         dataProvider.addSortComparator(Comparator.comparing(Transaction::getTime).reversed()::compare);
         grid.setDataProvider(dataProvider);
+
+        FooterRow footer = grid.appendFooterRow();
+        footer.getCell("Time").setText("Total");
+        footer.getCell("Price").setText(DECIMALFORMAT.format(transactions.stream().mapToDouble(Transaction::getPrice).sum()));
 
         // TODO add when footers implemented in v8
         // grid.setFooterVisible(true);

@@ -1,6 +1,5 @@
 package demo.ui.view.schedule;
 
-import com.vaadin.event.LayoutEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
@@ -15,6 +14,9 @@ import demo.domain.Movie;
 import demo.ui.component.MovieDetailsWindow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
+import org.vaadin.viritin.label.MLabel;
+import org.vaadin.viritin.layouts.MCssLayout;
+import org.vaadin.viritin.layouts.MVerticalLayout;
 
 import javax.annotation.PostConstruct;
 
@@ -58,54 +60,46 @@ public class ScheduleView extends CssLayout implements View {
 
     private void injectMovieCoverStyles() {
         // Add all movie cover images as classes to CSSInject
-        String styles = "";
+        StringBuilder styles = new StringBuilder();
         for (Movie m : dataProvider.getMovies()) {
             WebBrowser webBrowser = Page.getCurrent().getWebBrowser();
 
-            String bg = "url(VAADIN/themes/" + UI.getCurrent().getTheme()
-                    + "/img/event-title-bg.png), url(" + m.getThumbUrl() + ")";
+            String bg = String.format("url(VAADIN/themes/%s/img/event-title-bg.png), url(%s)", UI.getCurrent().getTheme(), m.getThumbUrl());
 
             // IE8 doesn't support multiple background images
             if (webBrowser.isIE() && webBrowser.getBrowserMajorVersion() == 8) {
-                bg = "url(" + m.getThumbUrl() + ")";
+                bg = String.format("url(%s)",  m.getThumbUrl());
             }
 
-            styles += ".v-calendar-event-" + m.getId()
-                    + " .v-calendar-event-content {background-image:" + bg
-                    + ";}";
+            styles.append(
+                    String.format(".v-calendar-event-%s .v-calendar-event-content {background-image:%s;}", m.getId(), bg));
         }
 
-        Page.getCurrent().getStyles().add(styles);
+        Page.getCurrent().getStyles().add(styles.toString());
     }
 
 
     private Component buildCatalogView() {
-        CssLayout catalog = new CssLayout();
-        catalog.setCaption("Catalog");
-        catalog.addStyleName("catalog");
+        MCssLayout catalog = new MCssLayout().withCaption("Catalog").withStyleName("catalog");
 
         for (final Movie movie : dataProvider.getMovies()) {
-            VerticalLayout frame = new VerticalLayout();
-            frame.addStyleName("frame");
-            frame.setWidthUndefined();
-            frame.setMargin(false);
-            frame.setSpacing(false);
 
-            Image poster = new Image(null,
-                    new ExternalResource(movie.getThumbUrl()));
+            Image poster = new Image(null, new ExternalResource(movie.getThumbUrl()));
             poster.setWidth(100.0f, Unit.PIXELS);
             poster.setHeight(145.0f, Unit.PIXELS);
-            frame.addComponent(poster);
 
-            Label titleLabel = new Label(movie.getTitle());
-            titleLabel.setWidth(120.0f, Unit.PIXELS);
-            frame.addComponent(titleLabel);
+            MLabel titleLabel = new MLabel(movie.getTitle()).withWidth(120.0f, Unit.PIXELS);
 
-            frame.addLayoutClickListener((LayoutEvents.LayoutClickListener) event -> {
+            MVerticalLayout frame = new MVerticalLayout(poster, titleLabel)
+                    .withStyleName("frame").withUndefinedWidth()
+                    .withMargin(false).withSpacing(false);
+
+            frame.addLayoutClickListener(event -> {
                 if (event.getButton() == MouseEventDetails.MouseButton.LEFT) {
                     movieDetailsWindow.open(movie, null, null);
                 }
             });
+
             catalog.addComponent(frame);
         }
         return catalog;

@@ -75,6 +75,11 @@ public final class OptionalSelect<T> extends CustomField<T> {
         captions.put(item, caption);
     }
 
+    public OptionalSelect<T> withOption(final T item, final String caption) {
+        addOption(item, caption);
+        return this;
+    }
+
     @Override
     public T getValue() {
         return value;

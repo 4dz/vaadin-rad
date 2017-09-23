@@ -43,14 +43,12 @@ public final class DashboardUI extends UI implements ViewDisplay {
      * injection; and not in the UI but somewhere closer to where they're
      * actually accessed.
      */
-    private final DataProvider dataProvider;
     private final EventBus.UIEventBus eventBus;
     private final MainLayout mainLayout;
 
     @Autowired
-    public DashboardUI(EventBus.UIEventBus eventBus, DataProvider dataProvider, MainLayout mainLayout) {
+    public DashboardUI(EventBus.UIEventBus eventBus, MainLayout mainLayout) {
         this.eventBus = eventBus;
-        this.dataProvider = dataProvider;
         this.mainLayout = mainLayout;
     }
 
@@ -113,13 +111,6 @@ public final class DashboardUI extends UI implements ViewDisplay {
         for (Window window : getWindows()) {
             window.close();
         }
-    }
-
-    /**
-     * @return An instance for accessing the (dummy) services layer.
-     */
-    public static DataProvider getDataProvider() {
-        return ((DashboardUI) getCurrent()).dataProvider;
     }
 
     @Override

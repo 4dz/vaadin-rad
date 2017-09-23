@@ -13,8 +13,6 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.themes.ValoTheme;
 import demo.domain.User;
@@ -22,6 +20,12 @@ import demo.ui.event.DashboardEvent.CloseOpenWindowsEvent;
 import demo.ui.event.DashboardEvent.ProfileUpdatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
+import org.vaadin.viritin.button.MButton;
+import org.vaadin.viritin.fields.MTextField;
+import org.vaadin.viritin.label.MLabel;
+import org.vaadin.viritin.layouts.MFormLayout;
+import org.vaadin.viritin.layouts.MHorizontalLayout;
+import org.vaadin.viritin.layouts.MVerticalLayout;
 
 import java.util.Arrays;
 
@@ -120,107 +124,73 @@ public class ProfilePreferencesWindow extends Window {
         return root;
     }
 
-    private Component buildProfileTab() {
-        HorizontalLayout root = new HorizontalLayout();
-        root.setCaption("Profile");
-        root.setIcon(VaadinIcons.USER);
-        root.setWidth(100.0f, Unit.PERCENTAGE);
-        root.setMargin(true);
-        root.addStyleName("profile-form");
-
-        VerticalLayout pic = new VerticalLayout();
-        pic.setSizeUndefined();
-        pic.setSpacing(true);
-        Image profilePic = new Image(null,
-                new ThemeResource("img/profile-pic-300px.jpg"));
+    private Component getProfilePicture() {
+        Image profilePic = new Image(null, new ThemeResource("img/profile-pic-300px.jpg"));
         profilePic.setWidth(100.0f, Unit.PIXELS);
-        pic.addComponent(profilePic);
 
-        Button upload = new Button("Change…", new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                Notification.show("Not implemented in this demo");
-            }
-        });
-        upload.addStyleName(ValoTheme.BUTTON_TINY);
-        pic.addComponent(upload);
+        MButton upload = new MButton(
+                "Change…",
+                event -> Notification.show("Not implemented in this demo"))
+                .withStyleName(ValoTheme.BUTTON_TINY);
 
-        root.addComponent(pic);
+        return new MVerticalLayout(profilePic, upload).withSizeUndefined();
 
-        FormLayout details = new FormLayout();
-        details.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
-        root.addComponent(details);
-        root.setExpandRatio(details, 1);
+    }
+    private Component buildProfileTab() {
 
+
+        return new MHorizontalLayout(getProfilePicture())
+                .withFullWidth().withCaption("Profile").withIcon(VaadinIcons.USER).withStyleName("profile-form")
+                .expand(getProfileForm());
+    }
+
+    private Component getProfileForm() {
+        initialiseFields();
+
+        return new MFormLayout(
+                firstNameField, lastNameField, titleField, sexField,
+
+                new MLabel("Contact Info").withStyleName(ValoTheme.LABEL_H4, ValoTheme.LABEL_COLORED),
+                emailField, locationField, phoneField, newsletterField, new MLabel(),
+
+                new MLabel("Additional Info").withStyleName(ValoTheme.LABEL_H4, ValoTheme.LABEL_COLORED),
+                websiteField, bioField
+
+        ).withStyleName(ValoTheme.FORMLAYOUT_LIGHT);
+    }
+
+    private void initialiseFields() {
         firstNameField = new TextField("First Name");
-        details.addComponent(firstNameField);
         lastNameField = new TextField("Last Name");
-        details.addComponent(lastNameField);
-
-        titleField = new ComboBox<>("Title",
-                Arrays.asList("Mr.", "Mrs.", "Ms."));
+        titleField = new ComboBox<>("Title", Arrays.asList("Mr.", "Mrs.", "Ms."));
         titleField.setPlaceholder("Please specify");
-        details.addComponent(titleField);
-
         sexField = new RadioButtonGroup<>("Sex", Arrays.asList(true, false));
         sexField.setItemCaptionGenerator(item -> item ? "Male" : "Female");
         sexField.addStyleName("horizontal");
-        details.addComponent(sexField);
+        phoneField = new MTextField("Phone").withFullWidth();
 
-        Label section = new Label("Contact Info");
-        section.addStyleName(ValoTheme.LABEL_H4);
-        section.addStyleName(ValoTheme.LABEL_COLORED);
-        details.addComponent(section);
-
-        emailField = new TextField("Email");
-        emailField.setWidth("100%");
-        emailField.setRequiredIndicatorVisible(true);
         // TODO add validation that not empty, use binder
-        details.addComponent(emailField);
+        emailField = new MTextField("Email").withFullWidth().withRequiredIndicatorVisible(true);
+        locationField = new MTextField("Location").withFullWidth();
+        locationField.setComponentError(new UserError("This address doesn't exist"));
 
-        locationField = new TextField("Location");
-        locationField.setWidth("100%");
-        locationField
-                .setComponentError(new UserError("This address doesn't exist"));
-        details.addComponent(locationField);
-
-        phoneField = new TextField("Phone");
-        phoneField.setWidth("100%");
-        details.addComponent(phoneField);
-
-        newsletterField = new OptionalSelect<>();
-        newsletterField.addOption(0, "Daily");
-        newsletterField.addOption(1, "Weekly");
-        newsletterField.addOption(2, "Monthly");
-        details.addComponent(newsletterField);
-
-        section = new Label("Additional Info");
-        section.addStyleName(ValoTheme.LABEL_H4);
-        section.addStyleName(ValoTheme.LABEL_COLORED);
-        details.addComponent(section);
-
-        websiteField = new TextField("Website");
-        websiteField.setPlaceholder("http://");
-        websiteField.setWidth("100%");
-        details.addComponent(websiteField);
-
+        newsletterField = new OptionalSelect<Integer>()
+                .withOption(0, "Daily")
+                .withOption(1, "Weekly")
+                .withOption(2, "Monthly");
+        websiteField = new MTextField("Website").withPlaceholder("http://").withFullWidth();
         bioField = new TextArea("Bio");
         bioField.setWidth("100%");
         bioField.setRows(4);
-        details.addComponent(bioField);
-
-        return root;
     }
 
     private Component buildFooter() {
-        HorizontalLayout footer = new HorizontalLayout();
-        footer.addStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
-        footer.setWidth(100.0f, Unit.PERCENTAGE);
-        footer.setSpacing(false);
 
-        Button ok = new Button("OK");
-        ok.addStyleName(ValoTheme.BUTTON_PRIMARY);
-        ok.addClickListener((ClickListener) event -> {
+
+        //footer.setSpacing(false);
+
+        MButton ok = new MButton("OK").withStyleName(ValoTheme.BUTTON_PRIMARY);
+        ok.addClickListener(event -> {
             if(fieldGroup.validate().isOk()) {
                 // Updated user should also be persisted to database. But
                 // not in this demo.
@@ -241,15 +211,14 @@ public class ProfilePreferencesWindow extends Window {
 
         });
         ok.focus();
-        footer.addComponent(ok);
-        footer.setComponentAlignment(ok, Alignment.TOP_RIGHT);
+
+        MHorizontalLayout footer = new MHorizontalLayout(ok)
+                .withFullWidth().withStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR).withAlign(ok, Alignment.TOP_RIGHT);
         return footer;
     }
 
-    public void open(final User user,
-                            final boolean preferencesTabActive) {
+    public void open(final User user, final boolean preferencesTabActive) {
         dashboardEventBus.publish(this, new CloseOpenWindowsEvent());
-        //Window w = new ProfilePreferencesWindow(user, preferencesTabActive);
 
         if (preferencesTabActive) {
             detailsWrapper.setSelectedTab(1);

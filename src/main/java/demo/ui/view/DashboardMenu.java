@@ -7,13 +7,11 @@ import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.themes.ValoTheme;
+import demo.data.DataProvider;
 import demo.domain.User;
-import demo.ui.DashboardUI;
 import demo.ui.component.ProfilePreferencesWindow;
 import demo.ui.event.DashboardEvent.NotificationsCountUpdatedEvent;
 import demo.ui.event.DashboardEvent.PostViewChangeEvent;
@@ -22,6 +20,9 @@ import demo.ui.event.DashboardEvent.UserLoggedOutEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.spring.events.annotation.EventBusListenerMethod;
+import org.vaadin.viritin.button.MButton;
+import org.vaadin.viritin.label.MLabel;
+import org.vaadin.viritin.layouts.MCssLayout;
 
 import javax.annotation.PostConstruct;
 
@@ -42,11 +43,16 @@ public final class DashboardMenu extends CustomComponent {
 
     private final EventBus.UIEventBus dashboardEventBus;
     private final ProfilePreferencesWindow profilePreferencesWindow;
+    private final DataProvider dataProvider;
 
     @Autowired
-    public DashboardMenu(EventBus.UIEventBus dashboardEventBus, ProfilePreferencesWindow profilePreferencesWindow) {
+    public DashboardMenu(EventBus.UIEventBus dashboardEventBus,
+                         ProfilePreferencesWindow profilePreferencesWindow,
+                         DataProvider dataProvider) {
+
         this.dashboardEventBus = dashboardEventBus;
         this.profilePreferencesWindow = profilePreferencesWindow;
+        this.dataProvider = dataProvider;
 
         setPrimaryStyleName("valo-menu");
         setId(ID);
@@ -62,18 +68,15 @@ public final class DashboardMenu extends CustomComponent {
     }
 
     private Component buildContent() {
-        final CssLayout menuContent = new CssLayout();
-        menuContent.addStyleNames(
+        final MCssLayout menuContent = new MCssLayout(
+                buildTitle(), buildUserMenu(), buildToggleButton(), buildMenuItems()
+        ).withStyleName(
                 "sidebar",
                 ValoTheme.DRAG_AND_DROP_WRAPPER_NO_VERTICAL_DRAG_HINTS,
                 ValoTheme.DRAG_AND_DROP_WRAPPER_NO_HORIZONTAL_DRAG_HINTS,
-                ValoTheme.MENU_PART
-        );
-
-        menuContent.setWidthUndefined();
-        menuContent.setHeight("100%");
-
-        menuContent.addComponents(buildTitle(), buildUserMenu(), buildToggleButton(), buildMenuItems());
+                ValoTheme.MENU_PART)
+                .withWidthUndefined()
+                .withFullHeight();
 
         return menuContent;
     }
@@ -90,8 +93,7 @@ public final class DashboardMenu extends CustomComponent {
     }
 
     private User getCurrentUser() {
-        return (User) VaadinSession.getCurrent()
-                .getAttribute(User.class.getName());
+        return (User) VaadinSession.getCurrent().getAttribute(User.class.getName());
     }
 
     private Component buildUserMenu() {
@@ -101,59 +103,33 @@ public final class DashboardMenu extends CustomComponent {
         settingsItem = settings.addItem("",
                 new ThemeResource("img/profile-pic-300px.jpg"), null);
         updateUserName(null);
-        settingsItem.addItem("Edit Profile", new Command() {
-            @Override
-            public void menuSelected(final MenuItem selectedItem) {
-                profilePreferencesWindow.open(getCurrentUser(), false);
-            }
-        });
-        settingsItem.addItem("Preferences", new Command() {
-            @Override
-            public void menuSelected(final MenuItem selectedItem) {
-                profilePreferencesWindow.open(getCurrentUser(), true);
-            }
-        });
+        settingsItem.addItem("Edit Profile", selectedItem -> profilePreferencesWindow.open(getCurrentUser(), false));
+        settingsItem.addItem("Preferences", selectedItem -> profilePreferencesWindow.open(getCurrentUser(), true));
         settingsItem.addSeparator();
-        settingsItem.addItem("Sign Out", new Command() {
-            @Override
-            public void menuSelected(final MenuItem selectedItem) {
-                dashboardEventBus.publish(this, new UserLoggedOutEvent());
-            }
-        });
+        settingsItem.addItem("Sign Out", selectedItem ->  dashboardEventBus.publish(this, new UserLoggedOutEvent()));
         return settings;
     }
 
     private Component buildToggleButton() {
-        Button valoMenuToggleButton = new Button("Menu", new ClickListener() {
-            @Override
-            public void buttonClick(final ClickEvent event) {
-                if (getCompositionRoot().getStyleName()
-                        .contains(STYLE_VISIBLE)) {
-                    getCompositionRoot().removeStyleName(STYLE_VISIBLE);
-                } else {
-                    getCompositionRoot().addStyleName(STYLE_VISIBLE);
-                }
+        return new MButton("Menu", event -> {
+            if (getCompositionRoot().getStyleName().contains(STYLE_VISIBLE)) {
+                getCompositionRoot().removeStyleName(STYLE_VISIBLE);
+            } else {
+                getCompositionRoot().addStyleName(STYLE_VISIBLE);
             }
-        });
-        valoMenuToggleButton.setIcon(VaadinIcons.LIST);
-        valoMenuToggleButton.addStyleName("valo-menu-toggle");
-        valoMenuToggleButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-        valoMenuToggleButton.addStyleName(ValoTheme.BUTTON_SMALL);
-        return valoMenuToggleButton;
+        }).withIcon(VaadinIcons.LIST)
+                .withStyleName("valo-menu-toggle",ValoTheme.BUTTON_BORDERLESS,ValoTheme.BUTTON_SMALL);
     }
 
     private Component buildMenuItems() {
-        CssLayout menuItemsLayout = new CssLayout();
-        menuItemsLayout.addStyleName("valo-menuitems");
+        MCssLayout menuItemsLayout = new MCssLayout().withStyleName("valo-menuitems");
 
         for (final DashboardViewType view : DashboardViewType.values()) {
             Component menuItemComponent = new ValoMenuItemButton(view);
 
             if (view == DashboardViewType.DASHBOARD) {
-                notificationsBadge = new Label();
-                notificationsBadge.setId(NOTIFICATIONS_BADGE_ID);
-                menuItemComponent = buildBadgeWrapper(menuItemComponent,
-                        notificationsBadge);
+                notificationsBadge = new MLabel().withId(NOTIFICATIONS_BADGE_ID);
+                menuItemComponent = buildBadgeWrapper(menuItemComponent, notificationsBadge);
             }
 
             menuItemsLayout.addComponent(menuItemComponent);
@@ -162,15 +138,14 @@ public final class DashboardMenu extends CustomComponent {
 
     }
 
-    private Component buildBadgeWrapper(final Component menuItemButton,
-                                        final Component badgeLabel) {
-        CssLayout dashboardWrapper = new CssLayout(menuItemButton);
-        dashboardWrapper.addStyleName("badgewrapper");
-        dashboardWrapper.addStyleName(ValoTheme.MENU_ITEM);
+    private Component buildBadgeWrapper(final Component menuItemButton, final Component badgeLabel) {
+        MCssLayout dashboardWrapper = new MCssLayout(menuItemButton,badgeLabel)
+                .withStyleName("badgewrapper",ValoTheme.MENU_ITEM);
+
         badgeLabel.addStyleName(ValoTheme.MENU_BADGE);
         badgeLabel.setWidthUndefined();
         badgeLabel.setVisible(false);
-        dashboardWrapper.addComponent(badgeLabel);
+
         return dashboardWrapper;
     }
 
@@ -187,9 +162,8 @@ public final class DashboardMenu extends CustomComponent {
     }
 
     @EventBusListenerMethod
-    public void updateNotificationsCount(
-            final NotificationsCountUpdatedEvent event) {
-        long unreadNotificationsCount = DashboardUI.getDataProvider().getUnreadNotificationsCount();
+    public void updateNotificationsCount(final NotificationsCountUpdatedEvent event) {
+        long unreadNotificationsCount = dataProvider.getUnreadNotificationsCount();
         notificationsBadge.setValue(String.valueOf(unreadNotificationsCount));
         notificationsBadge.setVisible(unreadNotificationsCount > 0);
     }
@@ -216,8 +190,7 @@ public final class DashboardMenu extends CustomComponent {
             setIcon(view.getIcon());
             setCaption(view.getTitle());
             dashboardEventBus.subscribe(this);
-            addClickListener((ClickListener) event -> UI.getCurrent().getNavigator()
-                    .navigateTo(view.getViewName()));
+            addClickListener(event -> UI.getCurrent().getNavigator().navigateTo(view.getViewName()));
 
         }
 

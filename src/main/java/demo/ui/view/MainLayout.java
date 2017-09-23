@@ -7,6 +7,8 @@ import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.viritin.layouts.MCssLayout;
+import org.vaadin.viritin.layouts.MHorizontalLayout;
 
 import javax.annotation.PostConstruct;
 
@@ -17,29 +19,20 @@ import javax.annotation.PostConstruct;
 @SpringComponent
 @UIScope
 @SuppressWarnings("serial")
-public class MainLayout extends HorizontalLayout {
+public class MainLayout extends MHorizontalLayout {
 
     private final ComponentContainer content;
     private final DashboardMenu dashboardMenu;
 
     public MainLayout(DashboardMenu dashboardMenu) {
         this.dashboardMenu = dashboardMenu;
-
-        setSizeFull();
-        addStyleName("mainview");
-        setSpacing(false);
-
-
-        content = new CssLayout();
-        content.addStyleName("view-content");
-        content.setSizeFull();
+        withFullSize().withStyleName("mainview").withSpacing(false);
+        content = new MCssLayout().withStyleName("view-content").withFullSize();
     }
 
     @PostConstruct
     public void init() {
-        addComponent(dashboardMenu);
-        addComponent(content);
-        setExpandRatio(content, 1.0f);
+        withComponent(dashboardMenu).expand(content);
     }
 
     public void setContent(Component component) {
