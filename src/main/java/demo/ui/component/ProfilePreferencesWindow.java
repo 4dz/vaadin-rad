@@ -32,8 +32,7 @@ public class ProfilePreferencesWindow extends Window {
 
     public static final String ID = "profilepreferenceswindow";
 
-    @Autowired
-    EventBus.UIEventBus dashboardEventBus;
+    private final EventBus.UIEventBus dashboardEventBus;
 
     private final BeanValidationBinder<User> fieldGroup;
     /*
@@ -66,7 +65,10 @@ public class ProfilePreferencesWindow extends Window {
 
     private final TabSheet detailsWrapper;
 
-    public ProfilePreferencesWindow() {
+    @Autowired
+    public ProfilePreferencesWindow(EventBus.UIEventBus dashboardEventBus) {
+        this.dashboardEventBus = dashboardEventBus;
+
         addStyleName("profile-window");
         setId(ID);
         Responsive.makeResponsive(this);

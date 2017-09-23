@@ -4,6 +4,7 @@ import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.icons.VaadinIcons;
+import static com.vaadin.data.provider.DataProvider.ofCollection;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Page;
@@ -14,7 +15,9 @@ import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.NumberRenderer;
 import com.vaadin.ui.themes.ValoTheme;
+import demo.data.DataProvider;
 import demo.domain.Transaction;
+
 import demo.ui.DashboardUI;
 import demo.ui.event.DashboardEvent.BrowserResizeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,20 +38,22 @@ import java.util.stream.Collectors;
 @SuppressWarnings("serial")
 public final class TransactionsView extends VerticalLayout implements View {
 
-    @Autowired
-    private EventBus.ViewEventBus dashboardEventBus;
+
+    private final EventBus.ViewEventBus dashboardEventBus;
+    private final DataProvider dataProvider;
 
     private final Grid<Transaction> grid;
-    private SingleSelect<Transaction> singleSelect;
 
     private String filterValue = "";
-    private static final DateFormat DATEFORMAT = new SimpleDateFormat(
-            "MM/dd/yyyy hh:mm:ss a");
-    private static final DecimalFormat DECIMALFORMAT = new DecimalFormat(
-            "#.##");
+    private static final DateFormat DATEFORMAT = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+    private static final DecimalFormat DECIMALFORMAT = new DecimalFormat("#.##");
     private static final Set<Column<Transaction, ?>> collapsibleColumns = new LinkedHashSet<>();
 
-    public TransactionsView() {
+    @Autowired
+    public TransactionsView(EventBus.ViewEventBus dashboardEventBus, DataProvider dataProvider) {
+        this.dashboardEventBus = dashboardEventBus;
+        this.dataProvider = dataProvider;
+
         setSizeFull();
         addStyleName("transactions");
         setMargin(false);
@@ -57,7 +62,7 @@ public final class TransactionsView extends VerticalLayout implements View {
         addComponent(buildToolbar());
 
         grid = buildGrid();
-        singleSelect = grid.asSingleSelect();
+        SingleSelect<Transaction> singleSelect = grid.asSingleSelect();
         addComponent(grid);
         setExpandRatio(grid, 1);
     }
@@ -100,7 +105,7 @@ public final class TransactionsView extends VerticalLayout implements View {
         // TODO use new filtering API
         filter.addValueChangeListener(event -> {
 
-            Collection<Transaction> transactions = DashboardUI.getDataProvider()
+            Collection<Transaction> transactions = dataProvider
                     .getRecentTransactions(200).stream().filter(transaction -> {
                         filterValue = filter.getValue().trim().toLowerCase();
                         return passesFilter(transaction.getRoom().getTheater().getCountry())
@@ -108,10 +113,8 @@ public final class TransactionsView extends VerticalLayout implements View {
                                 || passesFilter(transaction.getRoom().getTheater().getCity());
                     }).collect(Collectors.toList());
 
-            ListDataProvider<Transaction> dataProvider = com.vaadin.data.provider.DataProvider
-                    .ofCollection(transactions);
-            dataProvider.addSortComparator(Comparator
-                    .comparing(Transaction::getTime).reversed()::compare);
+            ListDataProvider<Transaction> dataProvider = ofCollection(transactions);
+            dataProvider.addSortComparator(Comparator.comparing(Transaction::getTime).reversed()::compare);
             grid.setDataProvider(dataProvider);
         });
 
@@ -155,16 +158,9 @@ public final class TransactionsView extends VerticalLayout implements View {
 
         grid.setColumnReorderingAllowed(true);
 
-        ListDataProvider<Transaction> dataProvider = com.vaadin.data.provider.DataProvider
-                .ofCollection(DashboardUI.getDataProvider()
-                        .getRecentTransactions(200));
-        dataProvider.addSortComparator(
-                Comparator.comparing(Transaction::getTime).reversed()::compare);
+        ListDataProvider<Transaction> dataProvider = ofCollection(this.dataProvider.getRecentTransactions(200));
+        dataProvider.addSortComparator(Comparator.comparing(Transaction::getTime).reversed()::compare);
         grid.setDataProvider(dataProvider);
-
-        // TODO either add these to grid or do it with style generators here
-        //grid.setColumnAlignment("seats", Align.RIGHT);
-        // grid.setColumnAlignment("price", Align.RIGHT);
 
         // TODO add when footers implemented in v8
         // grid.setFooterVisible(true);

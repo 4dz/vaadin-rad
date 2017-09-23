@@ -36,11 +36,8 @@ import java.util.List;
 public final class DashboardView extends Panel implements View,
         DashboardEditListener {
 
-    @Autowired
-    private EventBus.ViewEventBus dashboardEventBus;
-
-    @Autowired
-    private DataProvider dataProvider;
+    private final EventBus.ViewEventBus dashboardEventBus;
+    private final DataProvider dataProvider;
 
     public static final String EDIT_ID = "dashboard-edit";
     public static final String TITLE_ID = "dashboard-title";
@@ -51,7 +48,11 @@ public final class DashboardView extends Panel implements View,
     private final VerticalLayout root;
     private Window notificationsWindow;
 
-    public DashboardView() {
+    @Autowired
+    public DashboardView(EventBus.ViewEventBus dashboardEventBus, DataProvider dataProvider) {
+        this.dashboardEventBus = dashboardEventBus;
+        this.dataProvider = dataProvider;
+
         addStyleName(ValoTheme.PANEL_BORDERLESS);
         setSizeFull();
 

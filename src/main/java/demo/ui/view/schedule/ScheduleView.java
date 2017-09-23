@@ -20,16 +20,17 @@ import javax.annotation.PostConstruct;
 
 @SpringView
 public class ScheduleView extends CssLayout implements View {
-    @Autowired
-    private EventBus.ViewEventBus dashboardEventBus;
+
+    private final EventBus.ViewEventBus dashboardEventBus;
+    private final DataProvider dataProvider;
+    private final MovieDetailsWindow movieDetailsWindow;
 
     @Autowired
-    private DataProvider dataProvider;
+    public ScheduleView(EventBus.ViewEventBus dashboardEventBus, DataProvider dataProvider, MovieDetailsWindow movieDetailsWindow) {
+        this.dashboardEventBus = dashboardEventBus;
+        this.dataProvider = dataProvider;
+        this.movieDetailsWindow = movieDetailsWindow;
 
-    @Autowired
-    private MovieDetailsWindow movieDetailsWindow;
-
-    public ScheduleView() {
         setSizeFull();
         addStyleName("schedule");
 

@@ -43,14 +43,16 @@ public final class DashboardUI extends UI implements ViewDisplay {
      * injection; and not in the UI but somewhere closer to where they're
      * actually accessed.
      */
-    @Autowired
-    private DataProvider dataProvider;
+    private final DataProvider dataProvider;
+    private final EventBus.UIEventBus eventBus;
+    private final MainLayout mainLayout;
 
     @Autowired
-    EventBus.UIEventBus eventBus;
-
-    @Autowired
-    private MainLayout mainLayout;
+    public DashboardUI(EventBus.UIEventBus eventBus, DataProvider dataProvider, MainLayout mainLayout) {
+        this.eventBus = eventBus;
+        this.dataProvider = dataProvider;
+        this.mainLayout = mainLayout;
+    }
 
     @Override
     protected void init(final VaadinRequest request) {

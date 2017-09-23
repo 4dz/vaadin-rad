@@ -20,11 +20,11 @@ import javax.annotation.PostConstruct;
 public class MainLayout extends HorizontalLayout {
 
     private final ComponentContainer content;
+    private final DashboardMenu dashboardMenu;
 
-    @Autowired
-    DashboardMenu dashboardMenu;
+    public MainLayout(DashboardMenu dashboardMenu) {
+        this.dashboardMenu = dashboardMenu;
 
-    public MainLayout() {
         setSizeFull();
         addStyleName("mainview");
         setSpacing(false);

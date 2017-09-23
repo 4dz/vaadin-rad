@@ -19,10 +19,12 @@ import org.vaadin.spring.events.EventBus;
 @SuppressWarnings("serial")
 public class LoginView extends VerticalLayout {
 
-    @Autowired
-    private EventBus.UIEventBus dashboardEventBus;
+    private final EventBus.UIEventBus dashboardEventBus;
 
-    public LoginView() {
+    @Autowired
+    public LoginView(EventBus.UIEventBus dashboardEventBus) {
+        this.dashboardEventBus=dashboardEventBus;
+
         setSizeFull();
         setMargin(false);
         setSpacing(false);

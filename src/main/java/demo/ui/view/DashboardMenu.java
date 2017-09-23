@@ -40,13 +40,14 @@ public final class DashboardMenu extends CustomComponent {
     private Label notificationsBadge;
     private MenuItem settingsItem;
 
-    @Autowired
-    EventBus.UIEventBus dashboardEventBus;
+    private final EventBus.UIEventBus dashboardEventBus;
+    private final ProfilePreferencesWindow profilePreferencesWindow;
 
     @Autowired
-    ProfilePreferencesWindow profilePreferencesWindow;
+    public DashboardMenu(EventBus.UIEventBus dashboardEventBus, ProfilePreferencesWindow profilePreferencesWindow) {
+        this.dashboardEventBus = dashboardEventBus;
+        this.profilePreferencesWindow = profilePreferencesWindow;
 
-    public DashboardMenu() {
         setPrimaryStyleName("valo-menu");
         setId(ID);
         setSizeUndefined();

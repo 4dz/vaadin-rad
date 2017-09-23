@@ -18,14 +18,17 @@ import java.util.Date;
 @SpringComponent
 @UIScope
 public class MovieDetailsWindow extends Window {
-    @Autowired
-    EventBus.UIEventBus dashboardEventBus;
+
+    private final EventBus.UIEventBus dashboardEventBus;
 
     private final Label synopsis = new Label();
 
     private final VerticalLayout content;
 
-    private MovieDetailsWindow() {
+    @Autowired
+    public MovieDetailsWindow(EventBus.UIEventBus dashboardEventBus) {
+        this.dashboardEventBus = dashboardEventBus;
+
         addStyleName("moviedetailswindow");
         Responsive.makeResponsive(this);
 
