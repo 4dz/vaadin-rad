@@ -14,15 +14,12 @@ import demo.ui.event.DashboardEvent.UserLoginRequestedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
 
-@SpringComponent
-@UIScope
 @SuppressWarnings("serial")
-public class LoginView extends VerticalLayout {
+public class LoginLayout extends VerticalLayout {
 
     private final EventBus.UIEventBus dashboardEventBus;
 
-    @Autowired
-    public LoginView(EventBus.UIEventBus dashboardEventBus) {
+    public LoginLayout(EventBus.UIEventBus dashboardEventBus) {
         this.dashboardEventBus=dashboardEventBus;
 
         setSizeFull();
@@ -77,8 +74,8 @@ public class LoginView extends VerticalLayout {
         fields.addComponents(username, password, signin);
         fields.setComponentAlignment(signin, Alignment.BOTTOM_LEFT);
 
-        signin.addClickListener(event -> dashboardEventBus.publish(this, new UserLoginRequestedEvent(username
-                .getValue(), password.getValue())));
+        signin.addClickListener(
+                event -> dashboardEventBus.publish(this, new UserLoginRequestedEvent(username.getValue(), password.getValue())));
         return fields;
     }
 

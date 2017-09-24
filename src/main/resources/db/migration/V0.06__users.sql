@@ -30,5 +30,7 @@ create table user_role (
 insert into role (name) values ('admin'), ('guest'), ('author');
 
 // password=password
-insert into user values ('4dz', 'ChJzErIAKCp3szkwE0RGn2tVziBv+QjP8GX/a5Rcgh2vxPB72FfmIiMfm3kCHn5SwNGhLX9t9FzBjLzE8LJBmg==', 'Adam', 'Perry', 'Mr', true, 'email@domain.com', 'Mars Colony', '07999 999999',1,'','');
-insert into user_role values ('4dz','admin'), ('4dz', 'author');
+insert into user values ('admin', 'ChJzErIAKCp3szkwE0RGn2tVziBv+QjP8GX/a5Rcgh2vxPB72FfmIiMfm3kCHn5SwNGhLX9t9FzBjLzE8LJBmg==', 'Adam', 'Perry', 'Mr', true, 'email@domain.com', 'Mars Colony', '07999 999999',1,'','');
+insert into user_role values ('admin','admin'), ('admin', 'author');
+insert into user values ('guest', 'ChJzErIAKCp3szkwE0RGn2tVziBv+QjP8GX/a5Rcgh2vxPB72FfmIiMfm3kCHn5SwNGhLX9t9FzBjLzE8LJBmg==', 'Joe', 'Bloggs', 'Mx', true, 'email@domain.com', 'Venus Colony', '07888 888888',0,'http://www.vaadin.com/','');
+insert into user_role values ('guest','guest');
