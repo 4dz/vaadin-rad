@@ -4,11 +4,13 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
+import com.vaadin.navigator.ViewProvider;
 import com.vaadin.server.*;
 import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.annotation.SpringViewDisplay;
+import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -18,6 +20,8 @@ import demo.data.DataProvider;
 import demo.ui.event.DashboardEvent.BrowserResizeEvent;
 import demo.ui.event.DashboardEvent.CloseOpenWindowsEvent;
 import demo.ui.event.DashboardEvent.UserLoggedOutEvent;
+import demo.ui.view.AccessDeniedView;
+import demo.ui.view.ErrorView;
 import demo.ui.view.MainLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
@@ -42,11 +46,13 @@ public final class DashboardUI extends UI implements ViewDisplay {
      */
     private final EventBus.UIEventBus eventBus;
     private final MainLayout mainLayout;
+    private final SpringViewProvider springViewProvider;
 
     @Autowired
-    public DashboardUI(EventBus.UIEventBus eventBus, MainLayout mainLayout) {
+    public DashboardUI(EventBus.UIEventBus eventBus, MainLayout mainLayout, SpringViewProvider springViewProvider) {
         this.eventBus = eventBus;
         this.mainLayout = mainLayout;
+        this.springViewProvider = springViewProvider;
     }
 
     @Override
@@ -65,6 +71,9 @@ public final class DashboardUI extends UI implements ViewDisplay {
             }
         });
 
+        springViewProvider.setAccessDeniedViewClass(AccessDeniedView.class);
+        getNavigator().setErrorView(ErrorView.class);
+
         eventBus.subscribe(this);
         Responsive.makeResponsive(this);
         addStyleName(ValoTheme.UI_WITH_MENU);
@@ -81,6 +90,7 @@ public final class DashboardUI extends UI implements ViewDisplay {
                         eventBus.publish(this, new BrowserResizeEvent());
                     }
                 });
+
     }
 
     /**

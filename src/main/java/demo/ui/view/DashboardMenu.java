@@ -153,6 +153,11 @@ public final class DashboardMenu extends CustomComponent {
                 menuItemsLayout.addComponent(menuItemComponent);
             }
         }
+
+        menuItemsLayout.addComponent(
+                new MButton().withPrimaryStyleName("valo-menu-item").withIcon(VaadinIcons.POWER_OFF)
+                        .withCaption("Logout").withListener((Button.ClickListener) e -> vaadinSecurity.logout()));
+
         return menuItemsLayout;
 
     }

@@ -6,13 +6,10 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
 import com.vaadin.server.Responsive;
 import com.vaadin.shared.Position;
-import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import demo.ui.event.DashboardEvent;
 import demo.ui.event.DashboardEvent.UserLoginRequestedEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.spring.events.annotation.EventBusListenerMethod;
 
@@ -24,9 +21,11 @@ public class LoginLayout extends VerticalLayout {
     private TextField username;
     private PasswordField password;
     private Label loginFailedLabel;
+    private Label loggedOutLabel;
+
     private CheckBox rememberMe;
 
-    public LoginLayout(EventBus dashboardEventBus) {
+    public LoginLayout(EventBus dashboardEventBus, boolean loggedOut) {
         this.dashboardEventBus=dashboardEventBus;
         dashboardEventBus.subscribe(this);
 
@@ -34,7 +33,7 @@ public class LoginLayout extends VerticalLayout {
         setMargin(false);
         setSpacing(false);
 
-        Component loginForm = buildLoginForm();
+        Component loginForm = buildLoginForm(loggedOut);
         addComponent(loginForm);
         setComponentAlignment(loginForm, Alignment.MIDDLE_CENTER);
 
@@ -49,7 +48,7 @@ public class LoginLayout extends VerticalLayout {
         notification.show(Page.getCurrent());
     }
 
-    private Component buildLoginForm() {
+    private Component buildLoginForm(boolean loggedOut) {
         final VerticalLayout loginPanel = new VerticalLayout();
         loginPanel.setSizeUndefined();
         loginPanel.setMargin(false);
@@ -65,6 +64,14 @@ public class LoginLayout extends VerticalLayout {
         loginFailedLabel.setSizeUndefined();
         loginFailedLabel.addStyleName(ValoTheme.LABEL_FAILURE);
         loginFailedLabel.setVisible(false);
+
+        if (loggedOut) {
+            loggedOutLabel = new Label("You have been logged out!");
+            loggedOutLabel.addStyleName(ValoTheme.LABEL_SUCCESS);
+            loggedOutLabel.setSizeUndefined();
+            loginPanel.addComponent(loggedOutLabel);
+            loginPanel.setComponentAlignment(loggedOutLabel, Alignment.BOTTOM_CENTER);
+        }
 
         return loginPanel;
     }
@@ -119,9 +126,9 @@ public class LoginLayout extends VerticalLayout {
         password.setValue("");
         loginFailedLabel.setValue(String.format("Login failed: %s", event.getMessage()));
         loginFailedLabel.setVisible(true);
-//        if (loggedOutLabel != null) {
-//            loggedOutLabel.setVisible(false);
-//        }
+        if (loggedOutLabel != null) {
+            loggedOutLabel.setVisible(false);
+        }
     }
 
 }

@@ -42,17 +42,13 @@ public class LoginUI extends UI {
         Responsive.makeResponsive(this);
         addStyleNames(ValoTheme.UI_WITH_MENU, "loginview");
 
-        setContent(new LoginLayout(eventBus));
+        setContent(new LoginLayout(eventBus, request.getParameter("logout")!=null));
 
         setSizeFull();
     }
 
     @EventBusListenerMethod
     public void userLoginRequested(final DashboardEvent.UserLoginRequestedEvent event) {
-
-//        User user = dataProvider.authenticate(event.getUserName(), event.getPassword());
-//        VaadinSession.getCurrent().setAttribute(User.class.getName(), user);
-//        updateContent();
 
         try {
             vaadinSecurity.login(event.getUserName(), event.getPassword(), event.isRememberMe());
