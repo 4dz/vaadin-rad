@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -30,8 +31,7 @@ import org.vaadin.spring.security.web.VaadinRedirectStrategy;
 
 @SpringBootApplication(
         scanBasePackages = {"demo", "org.vaadin.spring.events", "org.vaadin.spring.config"},
-        exclude = org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class
-)
+        exclude = org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class)
 public class Application {
 
     public static void main(String[] args) {
@@ -57,9 +57,6 @@ public class Application {
 
         @Override
         public void configure(AuthenticationManagerBuilder auth) throws Exception {
-//            auth.inMemoryAuthentication().withUser("user").password("user").roles("USER").and().withUser("admin")
-//                    .password("admin").roles("ADMIN");
-
             auth.userDetailsService(userDetailsService).passwordEncoder(passwordencoder());
         }
 
