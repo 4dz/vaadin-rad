@@ -22,6 +22,7 @@ import demo.domain.Transaction;
 import demo.ui.DashboardUI;
 import demo.ui.event.DashboardEvent.BrowserResizeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.spring.events.annotation.EventBusListenerMethod;
 import org.vaadin.viritin.fields.MTextField;
@@ -35,9 +36,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Secured("ROLE_ADMIN")
 @SpringView
 @SuppressWarnings("serial")
-public final class TransactionsView extends VerticalLayout implements View {
+public class TransactionsView extends VerticalLayout implements View {
 
 
     private final EventBus.ViewEventBus dashboardEventBus;

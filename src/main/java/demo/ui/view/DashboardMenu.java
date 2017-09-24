@@ -18,6 +18,8 @@ import demo.ui.event.DashboardEvent.PostViewChangeEvent;
 import demo.ui.event.DashboardEvent.ProfileUpdatedEvent;
 import demo.ui.event.DashboardEvent.UserLoggedOutEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.access.annotation.Secured;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.spring.events.annotation.EventBusListenerMethod;
 import org.vaadin.spring.security.shared.VaadinSharedSecurity;
@@ -46,17 +48,21 @@ public final class DashboardMenu extends CustomComponent {
     private final ProfilePreferencesWindow profilePreferencesWindow;
     private final DataProvider dataProvider;
     private final VaadinSharedSecurity vaadinSecurity;
+    private final ApplicationContext applicationContext;
+
 
     @Autowired
     public DashboardMenu(EventBus.UIEventBus dashboardEventBus,
                          ProfilePreferencesWindow profilePreferencesWindow,
                          DataProvider dataProvider,
-                         VaadinSharedSecurity vaadinSecurity) {
+                         VaadinSharedSecurity vaadinSecurity,
+                         ApplicationContext applicationContext) {
 
         this.dashboardEventBus = dashboardEventBus;
         this.profilePreferencesWindow = profilePreferencesWindow;
         this.dataProvider = dataProvider;
         this.vaadinSecurity = vaadinSecurity;
+        this.applicationContext = applicationContext;
 
         setPrimaryStyleName("valo-menu");
         setId(ID);
@@ -72,7 +78,7 @@ public final class DashboardMenu extends CustomComponent {
     }
 
     private Component buildContent() {
-        final MCssLayout menuContent = new MCssLayout(
+        return new MCssLayout(
                 buildTitle(), buildUserMenu(), buildToggleButton(), buildMenuItems()
         ).withStyleName(
                 "sidebar",
@@ -81,8 +87,6 @@ public final class DashboardMenu extends CustomComponent {
                 ValoTheme.MENU_PART)
                 .withWidthUndefined()
                 .withFullHeight();
-
-        return menuContent;
     }
 
     private Component buildTitle() {
@@ -97,7 +101,14 @@ public final class DashboardMenu extends CustomComponent {
     }
 
     private User getCurrentUser() {
-        return (User) vaadinSecurity.getAuthentication().getPrincipal();
+        Object principal = vaadinSecurity.getAuthentication().getPrincipal();
+        if(principal!=null) {
+
+            if(principal instanceof User) {
+                return (User) principal;
+            }
+        }
+        return null;
     }
 
     private Component buildUserMenu() {
@@ -129,14 +140,18 @@ public final class DashboardMenu extends CustomComponent {
         MCssLayout menuItemsLayout = new MCssLayout().withStyleName("valo-menuitems");
 
         for (final DashboardViewType view : DashboardViewType.values()) {
-            Component menuItemComponent = new ValoMenuItemButton(view);
+            Secured secured = view.getViewClass().getAnnotation(Secured.class);
+            //Secured secured = applicationContext.findAnnotationOnBean(view.getViewName(), Secured.class);
+            if(secured==null || vaadinSecurity.hasAnyAuthority(secured.value())) {
+                Component menuItemComponent = new ValoMenuItemButton(view);
 
-            if (view == DashboardViewType.DASHBOARD) {
-                notificationsBadge = new MLabel().withId(NOTIFICATIONS_BADGE_ID);
-                menuItemComponent = buildBadgeWrapper(menuItemComponent, notificationsBadge);
+                if (view == DashboardViewType.DASHBOARD) {
+                    notificationsBadge = new MLabel().withId(NOTIFICATIONS_BADGE_ID);
+                    menuItemComponent = buildBadgeWrapper(menuItemComponent, notificationsBadge);
+                }
+
+                menuItemsLayout.addComponent(menuItemComponent);
             }
-
-            menuItemsLayout.addComponent(menuItemComponent);
         }
         return menuItemsLayout;
 

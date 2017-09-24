@@ -1,5 +1,6 @@
 package demo.security;
 
+import demo.domain.Role;
 import demo.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -7,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class JpaUserDetails extends User implements UserDetails {
 
@@ -18,7 +20,7 @@ public class JpaUserDetails extends User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String roles= StringUtils.collectionToCommaDelimitedString(getRoles());
+        String roles=getRoles().stream().map(r -> "ROLE_"+r.toString()).collect(Collectors.joining(","));
         return AuthorityUtils.commaSeparatedStringToAuthorityList(roles);
     }
 

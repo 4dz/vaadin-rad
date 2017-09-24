@@ -30,7 +30,7 @@ import javax.annotation.PostConstruct;
 
 @SpringView(name="")
 @SuppressWarnings("serial")
-public final class DashboardView extends Panel implements View,
+public class DashboardView extends Panel implements View,
         DashboardEditListener {
 
     private final EventBus.ViewEventBus dashboardEventBus;
