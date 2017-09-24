@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.spring.events.annotation.EventBusListenerMethod;
 
+import javax.xml.crypto.Data;
 import java.util.Locale;
 
 @Theme("dashboard")
@@ -45,10 +46,12 @@ public final class DashboardUI extends UI implements ViewDisplay {
      */
     private final EventBus.UIEventBus eventBus;
     private final MainLayout mainLayout;
+    private final DataProvider dataProvider;
 
     @Autowired
-    public DashboardUI(EventBus.UIEventBus eventBus, MainLayout mainLayout) {
+    public DashboardUI(EventBus.UIEventBus eventBus, DataProvider dataProvider, MainLayout mainLayout) {
         this.eventBus = eventBus;
+        this.dataProvider = dataProvider;
         this.mainLayout = mainLayout;
     }
 
@@ -88,14 +91,12 @@ public final class DashboardUI extends UI implements ViewDisplay {
         setContent(mainLayout);
     }
 
-    /*
     @EventBusListenerMethod
-    public void userLoginRequested(final UserLoginRequestedEvent event) {
-        User user = getDataProvider().authenticate(event.getUserName(),
-                event.getPassword());
+    public void userLoginRequested(final DashboardEvent.UserLoginRequestedEvent event) {
+        User user = dataProvider.authenticate(event.getUserName(), event.getPassword());
         VaadinSession.getCurrent().setAttribute(User.class.getName(), user);
         updateContent();
-    }*/
+    }
 
     @EventBusListenerMethod
     public void userLoggedOut(final UserLoggedOutEvent event) {

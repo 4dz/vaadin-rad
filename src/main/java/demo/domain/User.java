@@ -1,24 +1,35 @@
 package demo.domain;
 
 import lombok.Data;
+import lombok.NonNull;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
 public final class User {
     @Id
-    private String userName;
-    private String role;
-    private String firstName;
-    private String lastName;
-    private String title;
+    @NonNull String userName = "";
+    @NonNull String hashedPassword = "";
+
+
+    /** Here is the third table **/
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="user_role", joinColumns = @JoinColumn(name="user_name"),
+            inverseJoinColumns = @JoinColumn(name="role_name"))
+    @NonNull List<Role> roles = Collections.emptyList();
+
+    @NonNull String firstName = "";
+    @NonNull String lastName = "";
+    @NonNull String title = "";
     private boolean male;
-    private String email;
-    private String location;
-    private String phone;
-    private Integer newsletterSubscription;
-    private String website;
-    private String bio;
+    @NonNull String email = "";
+    @NonNull String location = "";
+    @NonNull String phone = "";
+    Integer newsletterSubscription;
+    String website;
+    String bio;
 }

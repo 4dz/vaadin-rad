@@ -46,4 +46,6 @@ public interface DataProvider {
     Collection<Transaction> getTransactionsBetween(Date startDate, Date endDate);
 
     Collection<Movie> getMovies();
+
+    User authenticate(String userName, String password);
 }
