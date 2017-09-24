@@ -4,23 +4,22 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
-import com.vaadin.server.*;
+import com.vaadin.server.Page;
 import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
+import com.vaadin.server.Responsive;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.annotation.SpringViewDisplay;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 import demo.data.DataProvider;
-import demo.domain.User;
-import demo.ui.event.DashboardEvent;
 import demo.ui.event.DashboardEvent.BrowserResizeEvent;
 import demo.ui.event.DashboardEvent.CloseOpenWindowsEvent;
 import demo.ui.event.DashboardEvent.UserLoggedOutEvent;
-import demo.ui.view.LoginLayout;
 import demo.ui.view.MainLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
@@ -44,12 +43,10 @@ public final class DashboardUI extends UI implements ViewDisplay {
      */
     private final EventBus.UIEventBus eventBus;
     private final MainLayout mainLayout;
-    private final DataProvider dataProvider;
 
     @Autowired
-    public DashboardUI(EventBus.UIEventBus eventBus, DataProvider dataProvider, MainLayout mainLayout) {
+    public DashboardUI(EventBus.UIEventBus eventBus, MainLayout mainLayout) {
         this.eventBus = eventBus;
-        this.dataProvider = dataProvider;
         this.mainLayout = mainLayout;
     }
 
@@ -93,25 +90,11 @@ public final class DashboardUI extends UI implements ViewDisplay {
      * Otherwise login view is shown.
      */
     private void updateContent() {
-        User user = (User) VaadinSession.getCurrent().getAttribute(User.class.getName());
 
-        if (user != null) {
-            setContent(mainLayout);
-            removeStyleName("loginview");
-            getNavigator().navigateTo(getNavigator().getState());
-        } else {
-            setContent(new LoginLayout(eventBus));
-            addStyleName("loginview");
-        }
+        setContent(mainLayout);
+        getNavigator().navigateTo(getNavigator().getState());
 
-        eventBus.publish(this, new DashboardEvent.ProfileUpdatedEvent());
-    }
-
-    @EventBusListenerMethod
-    public void userLoginRequested(final DashboardEvent.UserLoginRequestedEvent event) {
-        User user = dataProvider.authenticate(event.getUserName(), event.getPassword());
-        VaadinSession.getCurrent().setAttribute(User.class.getName(), user);
-        updateContent();
+//        eventBus.publish(this, new DashboardEvent.ProfileUpdatedEvent());
     }
 
     @EventBusListenerMethod

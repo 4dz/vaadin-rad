@@ -20,6 +20,7 @@ import demo.ui.event.DashboardEvent.UserLoggedOutEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.spring.events.annotation.EventBusListenerMethod;
+import org.vaadin.spring.security.shared.VaadinSharedSecurity;
 import org.vaadin.viritin.button.MButton;
 import org.vaadin.viritin.label.MLabel;
 import org.vaadin.viritin.layouts.MCssLayout;
@@ -44,15 +45,18 @@ public final class DashboardMenu extends CustomComponent {
     private final EventBus.UIEventBus dashboardEventBus;
     private final ProfilePreferencesWindow profilePreferencesWindow;
     private final DataProvider dataProvider;
+    private final VaadinSharedSecurity vaadinSecurity;
 
     @Autowired
     public DashboardMenu(EventBus.UIEventBus dashboardEventBus,
                          ProfilePreferencesWindow profilePreferencesWindow,
-                         DataProvider dataProvider) {
+                         DataProvider dataProvider,
+                         VaadinSharedSecurity vaadinSecurity) {
 
         this.dashboardEventBus = dashboardEventBus;
         this.profilePreferencesWindow = profilePreferencesWindow;
         this.dataProvider = dataProvider;
+        this.vaadinSecurity = vaadinSecurity;
 
         setPrimaryStyleName("valo-menu");
         setId(ID);
@@ -93,7 +97,7 @@ public final class DashboardMenu extends CustomComponent {
     }
 
     private User getCurrentUser() {
-        return (User) VaadinSession.getCurrent().getAttribute(User.class.getName());
+        return (User) vaadinSecurity.getAuthentication().getPrincipal();
     }
 
     private Component buildUserMenu() {

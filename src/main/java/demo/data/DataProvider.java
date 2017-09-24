@@ -47,5 +47,4 @@ public interface DataProvider {
 
     Collection<Movie> getMovies();
 
-    User authenticate(String userName, String password);
 }

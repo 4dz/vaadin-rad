@@ -1,11 +1,14 @@
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
+
+import static org.junit.Assert.assertTrue;
 
 public class SaltTest {
 
@@ -31,6 +34,9 @@ public class SaltTest {
     @Test
     public void getPasswordHash() throws NoSuchAlgorithmException, InvalidKeySpecException {
         String password = "password";
+        String passwordHash;
+
+        /*
         byte[] salt = new byte[] {-42,111,-102,-67,37,4,-36,-75,48,99,126,126,-120,98,105,117};
         String passwordHash;
 
@@ -39,8 +45,14 @@ public class SaltTest {
         SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         byte[] hash = skf.generateSecret(spec).getEncoded();
         passwordHash = Base64.encodeBase64String(hash);
-
+        */
+        String oldHash = "$2a$10$emvvR53LIzBlEnl.F7GAqeC4/IcppozwcFkNkPVPvbji/e1aToEvK";
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        passwordHash=encoder.encode(password);
         System.err.println(passwordHash);
+
+        assertTrue(encoder.matches(password, passwordHash));
+        assertTrue(encoder.matches(password, oldHash));
     }
 
 }

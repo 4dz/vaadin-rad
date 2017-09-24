@@ -72,29 +72,4 @@ public class JpaDataProvider implements DataProvider {
         return movieRepository.findAll();
     }
 
-    @Override
-    public User authenticate(String userName, String password) {
-        final byte[] salt = new byte[] {-42,111,-102,-67,37,4,-36,-75,48,99,126,126,-120,98,105,117};
-
-
-        String passwordHash;
-        try {
-            final char[] chars = password.toCharArray();
-            PBEKeySpec spec = new PBEKeySpec(chars, salt, 1000, 64 * 8);
-            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            byte[] hash = skf.generateSecret(spec).getEncoded();
-            passwordHash = Base64.encodeBase64String(hash);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        User user = userRepository.findOne(userName);
-        if(user!=null && user.getHashedPassword().equals(passwordHash)) {
-            return user;
-        }
-        return null;
-    }
-
-
 }

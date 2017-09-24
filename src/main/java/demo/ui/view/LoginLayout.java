@@ -10,17 +10,25 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import demo.ui.event.DashboardEvent;
 import demo.ui.event.DashboardEvent.UserLoginRequestedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
+import org.vaadin.spring.events.annotation.EventBusListenerMethod;
 
 @SuppressWarnings("serial")
 public class LoginLayout extends VerticalLayout {
 
-    private final EventBus.UIEventBus dashboardEventBus;
+    private final EventBus dashboardEventBus;
 
-    public LoginLayout(EventBus.UIEventBus dashboardEventBus) {
+    private TextField username;
+    private PasswordField password;
+    private Label loginFailedLabel;
+    private CheckBox rememberMe;
+
+    public LoginLayout(EventBus dashboardEventBus) {
         this.dashboardEventBus=dashboardEventBus;
+        dashboardEventBus.subscribe(this);
 
         setSizeFull();
         setMargin(false);
@@ -50,7 +58,14 @@ public class LoginLayout extends VerticalLayout {
 
         loginPanel.addComponent(buildLabels());
         loginPanel.addComponent(buildFields());
-        loginPanel.addComponent(new CheckBox("Remember me", true));
+        loginPanel.addComponent(rememberMe = new CheckBox("Remember me", true));
+
+        loginPanel.addComponent(loginFailedLabel = new Label());
+        loginPanel.setComponentAlignment(loginFailedLabel, Alignment.BOTTOM_CENTER);
+        loginFailedLabel.setSizeUndefined();
+        loginFailedLabel.addStyleName(ValoTheme.LABEL_FAILURE);
+        loginFailedLabel.setVisible(false);
+
         return loginPanel;
     }
 
@@ -58,11 +73,11 @@ public class LoginLayout extends VerticalLayout {
         HorizontalLayout fields = new HorizontalLayout();
         fields.addStyleName("fields");
 
-        final TextField username = new TextField("Username");
+        username = new TextField("Username");
         username.setIcon(VaadinIcons.USER);
         username.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
 
-        final PasswordField password = new PasswordField("Password");
+        password = new PasswordField("Password");
         password.setIcon(VaadinIcons.LOCK);
         password.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
 
@@ -75,7 +90,7 @@ public class LoginLayout extends VerticalLayout {
         fields.setComponentAlignment(signin, Alignment.BOTTOM_LEFT);
 
         signin.addClickListener(
-                event -> dashboardEventBus.publish(this, new UserLoginRequestedEvent(username.getValue(), password.getValue())));
+                event -> dashboardEventBus.publish(this, new UserLoginRequestedEvent(username.getValue(), password.getValue(), rememberMe.getValue())));
         return fields;
     }
 
@@ -95,6 +110,18 @@ public class LoginLayout extends VerticalLayout {
         title.addStyleName(ValoTheme.LABEL_LIGHT);
         labels.addComponent(title);
         return labels;
+    }
+
+    @EventBusListenerMethod
+    public void userLoginRequested(final DashboardEvent.UserLoginFailedEvent event) {
+        username.focus();
+        username.selectAll();
+        password.setValue("");
+        loginFailedLabel.setValue(String.format("Login failed: %s", event.getMessage()));
+        loginFailedLabel.setVisible(true);
+//        if (loggedOutLabel != null) {
+//            loggedOutLabel.setVisible(false);
+//        }
     }
 
 }

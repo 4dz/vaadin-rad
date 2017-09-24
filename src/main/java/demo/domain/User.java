@@ -1,7 +1,9 @@
 package demo.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Collections;
@@ -10,14 +12,16 @@ import java.util.Set;
 
 @Data
 @Entity
-public final class User {
+@AllArgsConstructor
+@RequiredArgsConstructor
+public class User {
     @Id
     @NonNull String userName = "";
     @NonNull String hashedPassword = "";
 
 
     /** Here is the third table **/
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinTable(name="user_role", joinColumns = @JoinColumn(name="user_name"),
             inverseJoinColumns = @JoinColumn(name="role_name"))
     @NonNull List<Role> roles = Collections.emptyList();

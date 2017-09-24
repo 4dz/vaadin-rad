@@ -11,5 +11,11 @@ import javax.persistence.Id;
 public class Role {
     @NonNull
     @Id
-    String name;
+    String name = "";
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
 }
