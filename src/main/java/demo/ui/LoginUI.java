@@ -1,6 +1,7 @@
 package demo.ui;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.annotations.Title;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
@@ -21,6 +22,7 @@ import org.vaadin.spring.security.shared.VaadinSharedSecurity;
  *
  * @author Petter Holmström (petter@vaadin.com)
  */
+@Title("QuickTickets Login")
 @SpringUI(path = "/login")
 @Theme("dashboard")
 public class LoginUI extends UI {
@@ -37,7 +39,6 @@ public class LoginUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        getPage().setTitle("Vaadin Shared Security Demo Login");
 
         Responsive.makeResponsive(this);
         addStyleNames(ValoTheme.UI_WITH_MENU, "loginview");
