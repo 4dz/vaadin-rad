@@ -122,6 +122,9 @@ verbosity of code.
 The project includes a sample of JUnit tests with Mockito which demonstrate testing UI components; that particular
 fields are present and that particular behaviours occur when clicking buttons.  See BookingWindowTest.
 
+The simple booking form was added to the application in under an hour, complete with simple unit test, integration test,
+database table, bean, etc.
+
 There are also Integration tests, which test that Flyway works correctly and that the tables created are compatible 
 with JPA.
 
