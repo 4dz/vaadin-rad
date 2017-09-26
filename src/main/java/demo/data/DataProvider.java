@@ -37,14 +37,7 @@ public interface DataProvider {
      */
     double getTotalSum();
 
-    /**
-     * @param startDate
-     * @param endDate
-     * @return A Collection of Transactions between the given start and end
-     *         dates.
-     */
-    Collection<Transaction> getTransactionsBetween(Date startDate, Date endDate);
-
     Collection<Movie> getMovies();
 
+    void save(CinemaBooking booking);
 }

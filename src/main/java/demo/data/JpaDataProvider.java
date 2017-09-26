@@ -1,9 +1,6 @@
 package demo.data;
 
-import demo.data.jpa.DashboardNotificationRepository;
-import demo.data.jpa.MovieRepository;
-import demo.data.jpa.TransactionRepository;
-import demo.data.jpa.UserRepository;
+import demo.data.jpa.*;
 import demo.domain.*;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +32,9 @@ public class JpaDataProvider implements DataProvider {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    CinemaBookingRepository bookingRepository;
+
     @Override
     public List<Transaction> getRecentTransactions(int count) {
         return transactionRepository.findAll(new PageRequest(0, count, new Sort(Sort.Direction.DESC, "time"))).getContent();
@@ -61,15 +61,13 @@ public class JpaDataProvider implements DataProvider {
     }
 
     @Override
-    public Collection<Transaction> getTransactionsBetween(Date startDate, Date endDate) {
-        return Arrays.asList(
-                new Transaction()
-        );
+    public Collection<Movie> getMovies() {
+        return movieRepository.findAll();
     }
 
     @Override
-    public Collection<Movie> getMovies() {
-        return movieRepository.findAll();
+    public void save(CinemaBooking booking) {
+        bookingRepository.save(booking);
     }
 
 }

@@ -11,7 +11,9 @@ import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.themes.ValoTheme;
 import demo.data.DataProvider;
+import demo.domain.CinemaBooking;
 import demo.domain.User;
+import demo.ui.component.BookingWindow;
 import demo.ui.component.ProfilePreferencesWindow;
 import demo.ui.event.DashboardEvent.NotificationsCountUpdatedEvent;
 import demo.ui.event.DashboardEvent.PostViewChangeEvent;
@@ -49,11 +51,13 @@ public final class DashboardMenu extends CustomComponent {
     private final DataProvider dataProvider;
     private final VaadinSharedSecurity vaadinSecurity;
     private final ApplicationContext applicationContext;
+    private final BookingWindow bookingWindow;
 
 
     @Autowired
     public DashboardMenu(EventBus.UIEventBus dashboardEventBus,
                          ProfilePreferencesWindow profilePreferencesWindow,
+                         BookingWindow bookingWindow,
                          DataProvider dataProvider,
                          VaadinSharedSecurity vaadinSecurity,
                          ApplicationContext applicationContext) {
@@ -63,6 +67,7 @@ public final class DashboardMenu extends CustomComponent {
         this.dataProvider = dataProvider;
         this.vaadinSecurity = vaadinSecurity;
         this.applicationContext = applicationContext;
+        this.bookingWindow = bookingWindow;
 
         setPrimaryStyleName("valo-menu");
         setId(ID);
@@ -153,6 +158,10 @@ public final class DashboardMenu extends CustomComponent {
                 menuItemsLayout.addComponent(menuItemComponent);
             }
         }
+
+        menuItemsLayout.addComponent(
+                new MButton().withPrimaryStyleName("valo-menu-item").withIcon(VaadinIcons.BOOK)
+                        .withCaption("Booking").withListener((Button.ClickListener) e -> bookingWindow.open()));
 
         menuItemsLayout.addComponent(
                 new MButton().withPrimaryStyleName("valo-menu-item").withIcon(VaadinIcons.POWER_OFF)
