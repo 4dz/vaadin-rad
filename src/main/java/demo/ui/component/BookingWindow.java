@@ -13,6 +13,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import demo.data.DataProvider;
 import demo.domain.CinemaBooking;
 import demo.domain.Movie;
+import demo.ui.CurrentUIProvider;
 import demo.ui.event.DashboardEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
@@ -35,6 +36,7 @@ public class BookingWindow extends Window {
     private final EventBus.UIEventBus dashboardEventBus;
     private final DataProvider dataProvider;
     private final BeanValidationBinder<CinemaBooking> fieldGroup;
+    private final CurrentUIProvider currentUIProvider;
 
     @PropertyId("firstName")
     private TextField firstNameField;
@@ -53,9 +55,10 @@ public class BookingWindow extends Window {
 
 
     @Autowired
-    public BookingWindow(EventBus.UIEventBus eventBus, DataProvider dataProvider) {
+    public BookingWindow(EventBus.UIEventBus eventBus, DataProvider dataProvider, CurrentUIProvider currentUIProvider) {
         this.dashboardEventBus = eventBus;
         this.dataProvider = dataProvider;
+        this.currentUIProvider = currentUIProvider;
 
         addStyleNames("profile-window");
         Responsive.makeResponsive(this);
@@ -85,7 +88,8 @@ public class BookingWindow extends Window {
 
         fieldGroup.setBean(new CinemaBooking());
 
-        UI.getCurrent().addWindow(this);
+        //UI.getCurrent().addWindow(this);
+        currentUIProvider.getCurrentUI().addWindow(this);
         this.focus();
     }
 
@@ -143,13 +147,13 @@ public class BookingWindow extends Window {
             // Updated user should also be persisted to database. But
             // not in this demo.
 
-            dataProvider.save(fieldGroup.getBean());
+            dataProvider.save(getCinemaBooking());
 
             Notification success = new Notification("Booking Added successfully");
             success.setDelayMsec(2000);
             success.setStyleName("bar success small");
             success.setPosition(Position.BOTTOM_CENTER);
-            success.show(Page.getCurrent());
+            success.show(currentUIProvider.getCurrentUI().getPage());
 
             close();
         } else {
@@ -157,6 +161,10 @@ public class BookingWindow extends Window {
                     Notification.Type.ERROR_MESSAGE);
         }
 
+    }
+
+    public CinemaBooking getCinemaBooking() {
+        return fieldGroup.getBean();
     }
 
 }
