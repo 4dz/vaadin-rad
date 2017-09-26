@@ -1,3 +1,7 @@
+|  |
+|:---:|
+|![Desktop and Admin Rapid Application Development](Sample.png "Desktop and Admin Rapid Application Development")|
+
 # Desktop and Admin Rapid Application Development
 The goal of this project was to look for a development model that supports rapid development of desktop/admin/crud style 
 web applications.  Ideally, a Java development background would be required but minimal JS/CSS/HTML.
