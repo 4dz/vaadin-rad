@@ -128,7 +128,13 @@ database table, bean, etc.
 There are also Integration tests, which test that Flyway works correctly and that the tables created are compatible 
 with JPA.
 
-#### 
+#### Differences to the official Vaadin Dashboard Demo
+This demonstration is built in Vaadin 8, without the v7 compatibility layer.  It is built on Spring Boot, and uses a 
+real database layer (H2, for development purposes).  It also makes greater use of Viritin and introduces Lombok and
+unit testing.
+
+It only includes some aspects of the Dashboard demo; enough to experiment with some of the technology described above.
+
 Instructions
 ------------
 Type,

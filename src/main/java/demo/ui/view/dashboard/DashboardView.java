@@ -105,7 +105,7 @@ public class DashboardView extends Panel implements View,
 
     private Component buildNotes() {
         TextArea notes = new TextArea("Notes");
-        notes.setValue("Remember to:\n· Zoom in and out in the Sales view\n· Filter the transactions and drag a set of them to the Reports tab\n· Create a new report\n· Change the schedule of the movie theater");
+        notes.setValue("Please try:\n· Filtering the transactions\n· Review the movie catalog\n· Make a booking\n· Login as guest, and note the Transactions view is not available");
         notes.setSizeFull();
         notes.addStyleName(ValoTheme.TEXTAREA_BORDERLESS);
 

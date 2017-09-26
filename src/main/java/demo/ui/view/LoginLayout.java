@@ -38,9 +38,9 @@ public class LoginLayout extends VerticalLayout {
         setComponentAlignment(loginForm, Alignment.MIDDLE_CENTER);
 
         Notification notification = new Notification(
-                "Welcome to Dashboard Demo");
+                "Welcome to Vaadin RAD Demo");
         notification
-                .setDescription("<span>This application is not real, it only demonstrates an application built with the <a href=\"https://vaadin.com\">Vaadin framework</a>.</span> <span>No username or password is required, just click the <b>Sign In</b> button to continue.</span>");
+                .setDescription("<span>Login as either 'admin' or 'guest'.  In both cases the password is 'password'.</span>");
         notification.setHtmlContentAllowed(true);
         notification.setStyleName("tray dark small closable login-help");
         notification.setPosition(Position.BOTTOM_CENTER);

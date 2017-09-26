@@ -11,7 +11,7 @@ import demo.ui.view.transactions.TransactionsView;
 public enum DashboardViewType {
     DASHBOARD("Dashboard", "", DashboardView.class, VaadinIcons.HOME, true),
     TRANSACTIONS("Transactions", "transactions", TransactionsView.class, VaadinIcons.TABLE, false),
-    SCHEDULE("Schedule", "schedule", ScheduleView.class, VaadinIcons.CALENDAR, false);
+    SCHEDULE("Catalog", "schedule", ScheduleView.class, VaadinIcons.DATABASE, false);
 
     private final String title;
     private final String viewName;
