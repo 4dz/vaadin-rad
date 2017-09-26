@@ -15,7 +15,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.vaadin.spring.events.EventBus;
 
-import java.util.Iterator;
 import java.util.function.Predicate;
 
 import static org.hamcrest.CoreMatchers.not;
@@ -108,17 +107,23 @@ public class BookingWindowTest {
 
     private static <T> T findComponent(Component parent, Class<T> type, Predicate<T> test) {
 
-        if(type.isInstance(parent) && test.test((T)parent)) {
-            return (T)parent;
+        if(type.isInstance(parent)) {
+
+            //noinspection unchecked
+            @SuppressWarnings("unchecked")
+            T component = (T)parent;
+
+            if(test.test(component)) {
+                return component;
+            }
         }
 
         if(parent instanceof HasComponents) {
             HasComponents container = (HasComponents) parent;
 
-            Iterator<Component> it = container.iterator();
-            while(it.hasNext()) {
-                T result = findComponent(it.next(), type, test);
-                if(result!=null) {
+            for (Component component : container) {
+                T result = findComponent(component, type, test);
+                if (result != null) {
                     return result;
                 }
             }
